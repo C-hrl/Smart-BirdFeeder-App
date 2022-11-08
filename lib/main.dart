@@ -11,7 +11,7 @@ final extendSidebar = StateProvider(((ref) => false));
 void main() {
   SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersive,
       overlays: [SystemUiOverlay.top]);
-  runApp(const SmartBirdFeederApp());
+  runApp(const ProviderScope(child: SmartBirdFeederApp()));
 }
 
 class SmartBirdFeederApp extends StatelessWidget {
@@ -38,7 +38,7 @@ class SmartBirdFeederApp extends StatelessWidget {
   }
 }
 
-class SideBar extends StatelessWidget {
+class SideBar extends ConsumerWidget {
   const SideBar({Key? key, required SidebarXController controller})
       : _controller = controller,
         super(key: key);
@@ -46,7 +46,7 @@ class SideBar extends StatelessWidget {
   final SidebarXController _controller;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Row(children: [
       SidebarX(
         controller: _controller,
@@ -77,10 +77,23 @@ class SideBar extends StatelessWidget {
         headerDivider: Divider(
           color: Theme.of(context).primaryColor.withOpacity(0.5),
         ),
-        items: const [
-          SidebarXItem(icon: Icons.home, label: 'Home'),
-          SidebarXItem(icon: Icons.calendar_month_rounded, label: "Calendar"),
-          SidebarXItem(icon: Icons.calendar_month_rounded, label: "Calendar")
+        items: [
+          SidebarXItem(
+              icon: Icons.home,
+              label: 'Home',
+              onTap: () {
+                ref.watch(selectedWindowProvider.notifier).state = Pages.home;
+              }),
+          SidebarXItem(
+              icon: Icons.calendar_month_rounded,
+              label: "Calendar",
+              onTap: () {
+                debugPrint("ok");
+                ref.watch(selectedWindowProvider.notifier).state =
+                    Pages.calendar;
+              }),
+          const SidebarXItem(
+              icon: Icons.calendar_month_rounded, label: "Calendar")
         ],
       ),
       if (true) ...[
@@ -97,28 +110,80 @@ class SideBar extends StatelessWidget {
   }
 }
 
+//TODO move to another location
+final selectedWindowProvider = StateProvider<Pages>((ref) {
+  return Pages.calendar;
+});
+
+enum Pages { home, calendar, etc }
+
 class MainScreen extends StatelessWidget {
   const MainScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Row(
-      children: [
-        const SizedBox(
+      children: const [
+        SizedBox(
             width:
                 70), //spacing to make sure the sidebar doesn't overlap over our mainscreen
-        Expanded(
-          child: TableCalendar(
-            focusedDay: DateTime.now(),
-            firstDay: DateTime(2000),
-            lastDay: DateTime(2030),
-            selectedDayPredicate: (day) {
-              return isSameDay(DateTime(2000), day);
-            },
-            onDaySelected: (selectedDay, focusedDay) {},
-          ),
-        )
       ],
+    );
+  }
+}
+
+class Page extends ConsumerWidget {
+  const Page({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final currentlySelectedPage = ref.watch(selectedWindowProvider);
+    switch (currentlySelectedPage) {
+      case Pages.home:
+        return const Home();
+      case Pages.calendar:
+        return const CalendarDisplay();
+      case Pages.etc:
+        debugPrint("SHrink");
+        return const SizedBox.shrink();
+    }
+  }
+}
+
+class Home extends ConsumerWidget {
+  const Home({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return const Expanded(
+        child: Text(
+      "Home",
+      textAlign: TextAlign.center,
+    ));
+  }
+}
+
+//TODO move to another location
+final selectedDayProvider = StateProvider<DateTime>((ref) {
+  return DateTime.now();
+});
+
+class CalendarDisplay extends ConsumerWidget {
+  const CalendarDisplay({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final currentlySelectedDay = ref.watch(selectedDayProvider);
+    return Expanded(
+      child: TableCalendar(
+        currentDay: currentlySelectedDay,
+        focusedDay: currentlySelectedDay,
+        firstDay: DateTime(2000),
+        lastDay: DateTime(2030),
+        onDaySelected: (selectedDay, focusedDay) {
+          ref.watch(selectedDayProvider.notifier).state = selectedDay;
+        },
+      ),
     );
   }
 }
