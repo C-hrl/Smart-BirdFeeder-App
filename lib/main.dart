@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sidebarx/sidebarx.dart';
 import 'package:smart_bird_feeder/calendar.dart';
@@ -9,8 +8,6 @@ import 'package:smart_bird_feeder/theme.dart';
 final extendSidebar = StateProvider(((ref) => false));
 
 void main() {
-  SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersive,
-      overlays: [SystemUiOverlay.top]);
   runApp(const ProviderScope(child: SmartBirdFeederApp()));
 }
 
@@ -24,7 +21,7 @@ class SmartBirdFeederApp extends StatelessWidget {
         title: 'Flutter Demo',
         home: Scaffold(
             appBar: AppBar(
-              backgroundColor: colorGolendAccent,
+              backgroundColor: colorGoldenAccent,
               toolbarHeight: 0,
             ),
             body: Stack(
@@ -125,6 +122,7 @@ class MainScreen extends StatelessWidget {
   }
 }
 
+//provider used to actualize what page is displayed
 final selectedWindowProvider = StateProvider<Pages>((ref) {
   return Pages.home;
 });

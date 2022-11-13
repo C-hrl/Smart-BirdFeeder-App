@@ -1,5 +1,6 @@
-import 'package:flutter/widgets.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:smart_bird_feeder/theme.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 final selectedDayProvider = StateProvider<DateTime>((ref) {
@@ -13,14 +14,69 @@ class CalendarDisplay extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final currentlySelectedDay = ref.watch(selectedDayProvider);
     return Expanded(
-      child: TableCalendar(
-        currentDay: currentlySelectedDay,
-        focusedDay: currentlySelectedDay,
-        firstDay: DateTime(2000),
-        lastDay: DateTime(2030),
-        onDaySelected: (selectedDay, focusedDay) {
-          ref.watch(selectedDayProvider.notifier).state = selectedDay;
-        },
+      child: Column(
+        children: [
+          TableCalendar(
+            currentDay: currentlySelectedDay,
+            focusedDay: currentlySelectedDay,
+            firstDay: DateTime(2000),
+            lastDay: DateTime(2030),
+            onDaySelected: (selectedDay, focusedDay) {
+              ref.watch(selectedDayProvider.notifier).state = selectedDay;
+            },
+          ),
+          const BirdCard()
+        ],
+      ),
+    );
+  }
+}
+
+//List of birds displayed under the calendar
+class BirdList extends ConsumerWidget {
+  const BirdList({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return ColoredBox(
+      color: colorGolden,
+      child: ListView(
+        padding: const EdgeInsets.all(15),
+        // ignore: prefer_const_constructors
+        children: const [BirdCard()],
+      ),
+    );
+  }
+}
+
+class BirdCard extends StatelessWidget {
+  const BirdCard({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Card(
+        elevation: 0,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            SizedBox(
+              height: 90,
+              width: 90,
+              child: ClipRRect(
+                borderRadius: const BorderRadius.only(
+                    topLeft: Radius.circular(16),
+                    bottomLeft: Radius.circular(16)),
+                child: Image.asset(
+                  "images/birdie_sanders.png",
+                  fit: BoxFit.fill,
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

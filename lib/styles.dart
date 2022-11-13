@@ -6,7 +6,7 @@ import 'package:smart_bird_feeder/theme.dart';
 const BoxDecoration sideBarColor = BoxDecoration(color: colorGolden);
 
 final BoxDecoration sideBarSelectedItemBoxDecoration = BoxDecoration(
-  color: colorGolendAccent,
+  color: colorGoldenAccent,
   borderRadius: BorderRadius.circular(5),
   boxShadow: [
     BoxShadow(
@@ -22,14 +22,14 @@ const IconThemeData selectedIconTheme = IconThemeData(
 );
 
 const IconThemeData iconTheme = IconThemeData(
-  color: colorGolendAccent,
+  color: colorGoldenAccent,
   size: 30,
 );
 
 //-----TEXT STYLES-----//
 
 const TextStyle text =
-    TextStyle(color: colorGolendAccent, fontWeight: FontWeight.w700);
+    TextStyle(color: colorGoldenAccent, fontWeight: FontWeight.w700);
 
 const TextStyle selectedText =
     TextStyle(color: colorWhite, fontWeight: FontWeight.w700);
