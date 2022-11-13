@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sidebarx/sidebarx.dart';
+import 'package:smart_bird_feeder/calendar.dart';
 import 'package:smart_bird_feeder/styles.dart';
 import 'package:smart_bird_feeder/theme.dart';
-import 'package:table_calendar/table_calendar.dart';
 
 final extendSidebar = StateProvider(((ref) => false));
 
@@ -110,13 +110,6 @@ class SideBar extends ConsumerWidget {
   }
 }
 
-//TODO move to another location
-final selectedWindowProvider = StateProvider<Pages>((ref) {
-  return Pages.calendar;
-});
-
-enum Pages { home, calendar, etc }
-
 class MainScreen extends StatelessWidget {
   const MainScreen({Key? key}) : super(key: key);
 
@@ -124,13 +117,19 @@ class MainScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: const [
-        SizedBox(
-            width:
-                70), //spacing to make sure the sidebar doesn't overlap over our mainscreen
+        //spacing to make sure the sidebar doesn't overlap over our mainscreen
+        SizedBox(width: 70),
+        Page()
       ],
     );
   }
 }
+
+final selectedWindowProvider = StateProvider<Pages>((ref) {
+  return Pages.home;
+});
+
+enum Pages { home, calendar, etc }
 
 class Page extends ConsumerWidget {
   const Page({Key? key}) : super(key: key);
@@ -160,30 +159,5 @@ class Home extends ConsumerWidget {
       "Home",
       textAlign: TextAlign.center,
     ));
-  }
-}
-
-//TODO move to another location
-final selectedDayProvider = StateProvider<DateTime>((ref) {
-  return DateTime.now();
-});
-
-class CalendarDisplay extends ConsumerWidget {
-  const CalendarDisplay({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final currentlySelectedDay = ref.watch(selectedDayProvider);
-    return Expanded(
-      child: TableCalendar(
-        currentDay: currentlySelectedDay,
-        focusedDay: currentlySelectedDay,
-        firstDay: DateTime(2000),
-        lastDay: DateTime(2030),
-        onDaySelected: (selectedDay, focusedDay) {
-          ref.watch(selectedDayProvider.notifier).state = selectedDay;
-        },
-      ),
-    );
   }
 }
