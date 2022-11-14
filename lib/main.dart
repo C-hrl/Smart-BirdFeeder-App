@@ -45,53 +45,56 @@ class SideBar extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Row(children: [
-      SidebarX(
-        controller: _controller,
-        theme: SidebarXTheme(
-            decoration: sideBarColor,
-            textStyle: text,
-            selectedTextStyle: selectedText,
-            itemTextPadding: const EdgeInsets.only(left: 30),
-            selectedItemTextPadding: const EdgeInsets.only(left: 30),
-            selectedItemDecoration: sideBarSelectedItemBoxDecoration,
-            iconTheme: iconTheme,
-            selectedIconTheme: selectedIconTheme),
-        extendedTheme: const SidebarXTheme(
-          width: 150,
-        ),
-        headerBuilder: ((context, extended) {
-          return Padding(
-            padding: const EdgeInsets.all(4),
-            child: ColorFiltered(
-              colorFilter:
-                  const ColorFilter.mode(colorGolden, BlendMode.multiply),
-              child: Image.asset(
-                "images/bird_icon.png",
+      Material(
+        elevation: 20,
+        child: SidebarX(
+          controller: _controller,
+          theme: SidebarXTheme(
+              decoration: sideBarColor,
+              textStyle: text,
+              selectedTextStyle: selectedText,
+              itemTextPadding: const EdgeInsets.only(left: 30),
+              selectedItemTextPadding: const EdgeInsets.only(left: 30),
+              selectedItemDecoration: sideBarSelectedItemBoxDecoration,
+              iconTheme: iconTheme,
+              selectedIconTheme: selectedIconTheme),
+          extendedTheme: const SidebarXTheme(
+            width: 150,
+          ),
+          headerBuilder: ((context, extended) {
+            return Padding(
+              padding: const EdgeInsets.all(4),
+              child: ColorFiltered(
+                colorFilter:
+                    const ColorFilter.mode(colorGolden, BlendMode.multiply),
+                child: Image.asset(
+                  "images/bird_icon.png",
+                ),
               ),
-            ),
-          );
-        }),
-        headerDivider: Divider(
-          color: Theme.of(context).primaryColor.withOpacity(0.5),
+            );
+          }),
+          headerDivider: Divider(
+            color: Theme.of(context).primaryColor.withOpacity(0.5),
+          ),
+          items: [
+            SidebarXItem(
+                icon: Icons.home,
+                label: 'Home',
+                onTap: () {
+                  ref.watch(selectedWindowProvider.notifier).state = Pages.home;
+                }),
+            SidebarXItem(
+                icon: Icons.calendar_month_rounded,
+                label: "Calendar",
+                onTap: () {
+                  debugPrint("ok");
+                  ref.watch(selectedWindowProvider.notifier).state =
+                      Pages.calendar;
+                }),
+            const SidebarXItem(
+                icon: Icons.calendar_month_rounded, label: "Calendar")
+          ],
         ),
-        items: [
-          SidebarXItem(
-              icon: Icons.home,
-              label: 'Home',
-              onTap: () {
-                ref.watch(selectedWindowProvider.notifier).state = Pages.home;
-              }),
-          SidebarXItem(
-              icon: Icons.calendar_month_rounded,
-              label: "Calendar",
-              onTap: () {
-                debugPrint("ok");
-                ref.watch(selectedWindowProvider.notifier).state =
-                    Pages.calendar;
-              }),
-          const SidebarXItem(
-              icon: Icons.calendar_month_rounded, label: "Calendar")
-        ],
       ),
       if (true) ...[
         Expanded(
