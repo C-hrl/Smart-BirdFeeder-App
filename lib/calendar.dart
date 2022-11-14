@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:smart_bird_feeder/theme.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 final selectedDayProvider = StateProvider<DateTime>((ref) {
@@ -17,9 +16,9 @@ class CalendarDisplay extends ConsumerWidget {
       child: Column(
         children: [
           SizedBox(
-            height: MediaQuery.of(context).size.height * 0.45,
+            height: 305,
             child: TableCalendar(
-              rowHeight: 35,
+              rowHeight: 45,
               daysOfWeekHeight: 16,
               currentDay: currentlySelectedDay,
               focusedDay: currentlySelectedDay,
@@ -43,12 +42,11 @@ class BirdList extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return SizedBox(
-      height: MediaQuery.of(context).size.height * 0.55,
+    return Expanded(
       child: ListView(
         padding: const EdgeInsets.all(15),
         // ignore: prefer_const_constructors
-        children: const [BirdCard()],
+        children: const [BirdCard(), BirdCard(), BirdCard(), BirdCard()],
       ),
     );
   }
