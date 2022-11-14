@@ -16,16 +16,21 @@ class CalendarDisplay extends ConsumerWidget {
     return Expanded(
       child: Column(
         children: [
-          TableCalendar(
-            currentDay: currentlySelectedDay,
-            focusedDay: currentlySelectedDay,
-            firstDay: DateTime(2000),
-            lastDay: DateTime(2030),
-            onDaySelected: (selectedDay, focusedDay) {
-              ref.watch(selectedDayProvider.notifier).state = selectedDay;
-            },
+          SizedBox(
+            height: MediaQuery.of(context).size.height * 0.45,
+            child: TableCalendar(
+              rowHeight: 35,
+              daysOfWeekHeight: 16,
+              currentDay: currentlySelectedDay,
+              focusedDay: currentlySelectedDay,
+              firstDay: DateTime(2000),
+              lastDay: DateTime(2030),
+              onDaySelected: (selectedDay, focusedDay) {
+                ref.watch(selectedDayProvider.notifier).state = selectedDay;
+              },
+            ),
           ),
-          const BirdCard()
+          const BirdList()
         ],
       ),
     );
@@ -38,8 +43,8 @@ class BirdList extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return ColoredBox(
-      color: colorGolden,
+    return SizedBox(
+      height: MediaQuery.of(context).size.height * 0.55,
       child: ListView(
         padding: const EdgeInsets.all(15),
         // ignore: prefer_const_constructors
