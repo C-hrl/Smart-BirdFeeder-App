@@ -10,8 +10,8 @@ final BoxDecoration sideBarSelectedItemBoxDecoration = BoxDecoration(
   borderRadius: BorderRadius.circular(5),
   boxShadow: [
     BoxShadow(
-      color: Colors.black.withOpacity(0.15),
-      blurRadius: 30,
+      color: Colors.black.withOpacity(0.5),
+      blurRadius: 2,
     )
   ],
 );

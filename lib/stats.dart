@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:smart_bird_feeder/theme.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
+import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 
 class ChartData {
   final String name;
@@ -22,22 +24,31 @@ class Stats extends StatelessWidget {
       ChartData("Moineau", 560, Colors.brown)
     ];
     return Expanded(
-        child: Column(children: [
-      SfCircularChart(
-        series: [
-          DoughnutSeries<ChartData, String>(
-              dataSource: chardata,
-              xValueMapper: (ChartData data, _) => data.name,
-              yValueMapper: (ChartData data, _) => data.number,
-              pointColorMapper: (ChartData data, _) => data.color,
-              dataLabelMapper: (ChartData data, _) => data.name,
-              radius: '90%',
-              innerRadius: '50%',
-              explode: true,
-              explodeIndex: 0,
-              dataLabelSettings: const DataLabelSettings(isVisible: true))
-        ],
-      )
-    ]));
+        child: SingleChildScrollView(
+      child: Column(children: [
+        SfDateRangePicker(
+          view: DateRangePickerView.month,
+          viewSpacing: 10,
+          selectionMode: DateRangePickerSelectionMode.extendableRange,
+        ),
+        SfCircularChart(
+          series: [
+            DoughnutSeries<ChartData, String>(
+                dataSource: chardata,
+                xValueMapper: (ChartData data, _) => data.name,
+                yValueMapper: (ChartData data, _) => data.number,
+                pointColorMapper: (ChartData data, _) => data.color,
+                dataLabelMapper: (ChartData data, _) => data.name,
+                radius: '90%',
+                innerRadius: '50%',
+                explode: true,
+                explodeIndex: 0,
+                strokeColor: colorWhite,
+                strokeWidth: 1,
+                dataLabelSettings: const DataLabelSettings(isVisible: true))
+          ],
+        )
+      ]),
+    ));
   }
 }

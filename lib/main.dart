@@ -59,9 +59,8 @@ class SideBar extends ConsumerWidget {
               selectedItemDecoration: sideBarSelectedItemBoxDecoration,
               iconTheme: iconTheme,
               selectedIconTheme: selectedIconTheme),
-          extendedTheme: const SidebarXTheme(
-            width: 150,
-          ),
+          extendedTheme:
+              SidebarXTheme(width: MediaQuery.of(context).size.width * 0.6),
           headerBuilder: ((context, extended) {
             return Padding(
               padding: const EdgeInsets.all(4),
@@ -70,6 +69,7 @@ class SideBar extends ConsumerWidget {
                     const ColorFilter.mode(colorGolden, BlendMode.multiply),
                 child: Image.asset(
                   "images/bird_icon.png",
+                  width: 100,
                 ),
               ),
             );
@@ -92,7 +92,7 @@ class SideBar extends ConsumerWidget {
                       Pages.calendar;
                 }),
             SidebarXItem(
-                icon: Icons.calendar_month_rounded,
+                icon: Icons.pie_chart_rounded,
                 label: "Calendar",
                 onTap: () {
                   ref.watch(selectedWindowProvider.notifier).state =
