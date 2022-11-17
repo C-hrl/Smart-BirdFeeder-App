@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:table_calendar/table_calendar.dart';
+import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 
 final selectedDayProvider = StateProvider<DateTime>((ref) {
   return DateTime.now();
@@ -15,20 +15,7 @@ class CalendarDisplay extends ConsumerWidget {
     return Expanded(
       child: Column(
         children: [
-          SizedBox(
-            height: 305,
-            child: TableCalendar(
-              rowHeight: 45,
-              daysOfWeekHeight: 16,
-              currentDay: currentlySelectedDay,
-              focusedDay: currentlySelectedDay,
-              firstDay: DateTime(2000),
-              lastDay: DateTime(2030),
-              onDaySelected: (selectedDay, focusedDay) {
-                ref.watch(selectedDayProvider.notifier).state = selectedDay;
-              },
-            ),
-          ),
+          SizedBox(height: 305, child: SfDateRangePicker()),
           const BirdList()
         ],
       ),
