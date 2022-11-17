@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sidebarx/sidebarx.dart';
 import 'package:smart_bird_feeder/calendar.dart';
+import 'package:smart_bird_feeder/stats.dart';
 import 'package:smart_bird_feeder/styles.dart';
 import 'package:smart_bird_feeder/theme.dart';
 
@@ -87,12 +88,16 @@ class SideBar extends ConsumerWidget {
                 icon: Icons.calendar_month_rounded,
                 label: "Calendar",
                 onTap: () {
-                  debugPrint("ok");
                   ref.watch(selectedWindowProvider.notifier).state =
                       Pages.calendar;
                 }),
-            const SidebarXItem(
-                icon: Icons.calendar_month_rounded, label: "Calendar")
+            SidebarXItem(
+                icon: Icons.calendar_month_rounded,
+                label: "Calendar",
+                onTap: () {
+                  ref.watch(selectedWindowProvider.notifier).state =
+                      Pages.stats;
+                })
           ],
         ),
       ),
@@ -130,7 +135,7 @@ final selectedWindowProvider = StateProvider<Pages>((ref) {
   return Pages.home;
 });
 
-enum Pages { home, calendar, etc }
+enum Pages { home, calendar, stats }
 
 class Page extends ConsumerWidget {
   const Page({Key? key}) : super(key: key);
@@ -143,9 +148,8 @@ class Page extends ConsumerWidget {
         return const Home();
       case Pages.calendar:
         return const CalendarDisplay();
-      case Pages.etc:
-        debugPrint("SHrink");
-        return const SizedBox.shrink();
+      case Pages.stats:
+        return const Stats();
     }
   }
 }
