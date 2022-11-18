@@ -53,7 +53,7 @@ class SideBar extends ConsumerWidget {
           theme: SidebarXTheme(
               decoration: sideBarColor,
               textStyle: text,
-              selectedTextStyle: selectedText,
+              selectedTextStyle: accentText,
               itemTextPadding: const EdgeInsets.only(left: 30),
               selectedItemTextPadding: const EdgeInsets.only(left: 30),
               selectedItemDecoration: sideBarSelectedItemBoxDecoration,
@@ -65,8 +65,7 @@ class SideBar extends ConsumerWidget {
             return Padding(
               padding: const EdgeInsets.all(4),
               child: ColorFiltered(
-                colorFilter:
-                    const ColorFilter.mode(colorGolden, BlendMode.multiply),
+                colorFilter: ColorFilter.mode(colorGolden, BlendMode.multiply),
                 child: Image.asset(
                   "images/bird_icon.png",
                   width: 100,

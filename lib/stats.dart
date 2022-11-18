@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:smart_bird_feeder/theme.dart';
+import 'package:smart_bird_feeder/utils.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 
@@ -17,11 +18,11 @@ class Stats extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final List<ChartData> chardata = [
-      ChartData("Mésange", 47, Colors.blue),
-      ChartData("Rouge-Gorge", 32, Colors.red),
-      ChartData("Pie", 12, Colors.blueGrey),
-      ChartData("Jay", 24, Colors.green),
-      ChartData("Moineau", 560, Colors.brown)
+      ChartData("Mésange", 47, harmonizer(Colors.blue)),
+      ChartData("Rouge-Gorge", 32, harmonizer(Colors.red)),
+      ChartData("Pie", 12, harmonizer(Colors.blueGrey)),
+      ChartData("Jay", 24, harmonizer(Colors.greenAccent)),
+      ChartData("Moineau", 560, harmonizer(Colors.brown))
     ];
     return Expanded(
         child: SingleChildScrollView(
@@ -45,6 +46,7 @@ class Stats extends StatelessWidget {
                 explodeIndex: 0,
                 strokeColor: colorWhite,
                 strokeWidth: 1,
+                enableTooltip: true,
                 dataLabelSettings: const DataLabelSettings(isVisible: true))
           ],
         )
