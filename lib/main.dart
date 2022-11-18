@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:sidebarx/sidebarx.dart';
 import 'package:smart_bird_feeder/calendar.dart';
 import 'package:smart_bird_feeder/stats.dart';
@@ -158,10 +159,12 @@ class Home extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return const Expanded(
-        child: Text(
-      "Home",
-      textAlign: TextAlign.center,
-    ));
+    return Expanded(
+        child: Center(
+            child: FaIcon(
+      FontAwesomeIcons.handMiddleFinger,
+      size: MediaQuery.of(context).size.width * 0.8,
+      color: colorGolden,
+    )));
   }
 }

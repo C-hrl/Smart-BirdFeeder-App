@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:smart_bird_feeder/theme.dart';
+import 'package:smart_bird_feeder/utils.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 
 final selectedDayProvider = StateProvider<DateTime>((ref) {
@@ -49,19 +52,28 @@ class BirdCard extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            SizedBox(
-              height: 90,
-              width: 90,
-              child: ClipRRect(
-                borderRadius: const BorderRadius.only(
-                    topLeft: Radius.circular(16),
-                    bottomLeft: Radius.circular(16)),
-                child: Image.asset(
-                  "images/birdie_sanders.png",
-                  fit: BoxFit.fill,
+            Container(
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(12),
+                  color: colorGolden.withOpacity(0.4)),
+              width: MediaQuery.of(context).size.width * 0.16,
+              height: MediaQuery.of(context).size.width * 0.16,
+              child: Center(
+                child: FaIcon(
+                  FontAwesomeIcons.dove,
+                  color: randomColor(),
+                  size: MediaQuery.of(context).size.width * 0.1,
                 ),
               ),
             ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: const [Text("Nom Normal"), Text("Nom Latin")],
+              ),
+            )
           ],
         ),
       ),
