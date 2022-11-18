@@ -14,10 +14,7 @@ class CalendarDisplay extends ConsumerWidget {
     final currentlySelectedDay = ref.watch(selectedDayProvider);
     return Expanded(
       child: Column(
-        children: [
-          SizedBox(height: 305, child: SfDateRangePicker()),
-          const BirdList()
-        ],
+        children: [SfDateRangePicker(), const BirdList()],
       ),
     );
   }
