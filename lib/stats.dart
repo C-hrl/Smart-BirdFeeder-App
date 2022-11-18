@@ -18,11 +18,11 @@ class Stats extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final List<ChartData> chardata = [
-      ChartData("Mésange", 47, colorHarmonization(Colors.blue)),
-      ChartData("Rouge-Gorge", 32, colorHarmonization(Colors.red)),
-      ChartData("Pie", 12, colorHarmonization(Colors.blueGrey)),
-      ChartData("Jay", 24, colorHarmonization(Colors.greenAccent)),
-      ChartData("Moineau", 560, colorHarmonization(Colors.amber)),
+      ChartData("Mésange", 47, randomColor()),
+      ChartData("Rouge-Gorge", 32, randomColor()),
+      ChartData("Pie", 12, randomColor()),
+      ChartData("Jay", 24, randomColor()),
+      ChartData("Moineau", 560, randomColor()),
     ];
     return Expanded(
         child: SingleChildScrollView(
