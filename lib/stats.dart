@@ -18,11 +18,11 @@ class Stats extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final List<ChartData> chardata = [
-      ChartData("Mésange", 47, harmonizer(Colors.blue)),
-      ChartData("Rouge-Gorge", 32, harmonizer(Colors.red)),
-      ChartData("Pie", 12, harmonizer(Colors.blueGrey)),
-      ChartData("Jay", 24, harmonizer(Colors.greenAccent)),
-      ChartData("Moineau", 560, harmonizer(Colors.brown))
+      ChartData("Mésange", 47, colorHarmonization(Colors.blue)),
+      ChartData("Rouge-Gorge", 32, colorHarmonization(Colors.red)),
+      ChartData("Pie", 12, colorHarmonization(Colors.blueGrey)),
+      ChartData("Jay", 24, colorHarmonization(Colors.greenAccent)),
+      ChartData("Moineau", 560, colorHarmonization(Colors.amber)),
     ];
     return Expanded(
         child: SingleChildScrollView(
@@ -33,6 +33,12 @@ class Stats extends StatelessWidget {
           selectionMode: DateRangePickerSelectionMode.extendableRange,
         ),
         SfCircularChart(
+          legend: Legend(
+              isVisible: true,
+              iconWidth: 10,
+              orientation: LegendItemOrientation.vertical,
+              position: LegendPosition.bottom,
+              overflowMode: LegendItemOverflowMode.wrap),
           series: [
             DoughnutSeries<ChartData, String>(
                 dataSource: chardata,
