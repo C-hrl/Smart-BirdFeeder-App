@@ -16,6 +16,17 @@ class Bird {
   String toString() => "Bird( name:$name; latinName:$latinName; temperature:$temperature; soundPath:$soundPath; date:$date)"; // Just for print()
 }
 
+Box<List<Bird>>? cachedDb;
+
+Future<Box<List<Bird>>> setupDatabase() async {
+  Hive.registerAdapter(BirdAdapter());
+  return await Hive.openBox<List<Bird>>('birdsBox');
+}
+
+Future<Box<List<Bird>>> getDatabase() async {
+  return cachedDb == null ? await setupDatabase() : cachedDb!;
+}
+
 void main() async {
   // Register Adapter
   Hive.registerAdapter(BirdAdapter()); 
