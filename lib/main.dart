@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:sidebarx/sidebarx.dart';
 import 'package:smart_bird_feeder/calendar.dart';
+import 'package:smart_bird_feeder/stats.dart';
 import 'package:smart_bird_feeder/styles.dart';
 import 'package:smart_bird_feeder/theme.dart';
 
@@ -45,53 +47,59 @@ class SideBar extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Row(children: [
-      SidebarX(
-        controller: _controller,
-        theme: SidebarXTheme(
-            decoration: sideBarColor,
-            textStyle: text,
-            selectedTextStyle: selectedText,
-            itemTextPadding: const EdgeInsets.only(left: 30),
-            selectedItemTextPadding: const EdgeInsets.only(left: 30),
-            selectedItemDecoration: sideBarSelectedItemBoxDecoration,
-            iconTheme: iconTheme,
-            selectedIconTheme: selectedIconTheme),
-        extendedTheme: const SidebarXTheme(
-          width: 150,
-        ),
-        headerBuilder: ((context, extended) {
-          return Padding(
-            padding: const EdgeInsets.all(4),
-            child: ColorFiltered(
-              colorFilter:
-                  const ColorFilter.mode(colorGolden, BlendMode.multiply),
-              child: Image.asset(
-                "images/bird_icon.png",
+      Material(
+        elevation: 20,
+        child: SidebarX(
+          controller: _controller,
+          theme: SidebarXTheme(
+              decoration: sideBarColor,
+              textStyle: text,
+              selectedTextStyle: accentText,
+              itemTextPadding: const EdgeInsets.only(left: 30),
+              selectedItemTextPadding: const EdgeInsets.only(left: 30),
+              selectedItemDecoration: sideBarSelectedItemBoxDecoration,
+              iconTheme: iconTheme,
+              selectedIconTheme: selectedIconTheme),
+          extendedTheme:
+              SidebarXTheme(width: MediaQuery.of(context).size.width * 0.6),
+          headerBuilder: ((context, extended) {
+            return Padding(
+              padding: const EdgeInsets.all(4),
+              child: ColorFiltered(
+                colorFilter: ColorFilter.mode(colorGolden, BlendMode.multiply),
+                child: Image.asset(
+                  "images/bird_icon.png",
+                  width: 100,
+                ),
               ),
-            ),
-          );
-        }),
-        headerDivider: Divider(
-          color: Theme.of(context).primaryColor.withOpacity(0.5),
+            );
+          }),
+          headerDivider: Divider(
+            color: Theme.of(context).primaryColor.withOpacity(0.5),
+          ),
+          items: [
+            SidebarXItem(
+                icon: Icons.home,
+                label: 'Home',
+                onTap: () {
+                  ref.watch(selectedWindowProvider.notifier).state = Pages.home;
+                }),
+            SidebarXItem(
+                icon: Icons.calendar_month_rounded,
+                label: "Calendar",
+                onTap: () {
+                  ref.watch(selectedWindowProvider.notifier).state =
+                      Pages.calendar;
+                }),
+            SidebarXItem(
+                icon: Icons.pie_chart_rounded,
+                label: "Calendar",
+                onTap: () {
+                  ref.watch(selectedWindowProvider.notifier).state =
+                      Pages.stats;
+                })
+          ],
         ),
-        items: [
-          SidebarXItem(
-              icon: Icons.home,
-              label: 'Home',
-              onTap: () {
-                ref.watch(selectedWindowProvider.notifier).state = Pages.home;
-              }),
-          SidebarXItem(
-              icon: Icons.calendar_month_rounded,
-              label: "Calendar",
-              onTap: () {
-                debugPrint("ok");
-                ref.watch(selectedWindowProvider.notifier).state =
-                    Pages.calendar;
-              }),
-          const SidebarXItem(
-              icon: Icons.calendar_month_rounded, label: "Calendar")
-        ],
       ),
       if (true) ...[
         Expanded(
@@ -127,7 +135,7 @@ final selectedWindowProvider = StateProvider<Pages>((ref) {
   return Pages.home;
 });
 
-enum Pages { home, calendar, etc }
+enum Pages { home, calendar, stats }
 
 class Page extends ConsumerWidget {
   const Page({Key? key}) : super(key: key);
@@ -140,9 +148,8 @@ class Page extends ConsumerWidget {
         return const Home();
       case Pages.calendar:
         return const CalendarDisplay();
-      case Pages.etc:
-        debugPrint("SHrink");
-        return const SizedBox.shrink();
+      case Pages.stats:
+        return const Stats();
     }
   }
 }
@@ -152,10 +159,12 @@ class Home extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return const Expanded(
-        child: Text(
-      "Home",
-      textAlign: TextAlign.center,
-    ));
+    return Expanded(
+        child: Center(
+            child: FaIcon(
+      FontAwesomeIcons.handMiddleFinger,
+      size: MediaQuery.of(context).size.width * 0.8,
+      color: colorGolden,
+    )));
   }
 }
