@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:smart_bird_feeder/utils.dart';
 
-const Color colorHarmonize = Colors.white;
+Color colorHarmonize = Colors.amber.shade200;
 Color colorGoldenAccent =
     colorHarmonization(const Color.fromARGB(255, 128, 91, 31));
 Color colorGolden =

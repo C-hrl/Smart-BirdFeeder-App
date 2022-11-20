@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:smart_bird_feeder/theme/styles.dart';
-import 'package:smart_bird_feeder/theme/theme.dart';
 import 'package:smart_bird_feeder/utils.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
@@ -23,7 +22,7 @@ class Stats extends StatelessWidget {
       ChartData("Rouge-Gorge", 32, randomColor()),
       ChartData("Pie", 12, randomColor()),
       ChartData("Jay", 24, randomColor()),
-      ChartData("Moineau", 560, randomColor()),
+      ChartData("Moineau", 50, randomColor()),
     ];
     return Expanded(
         child: SingleChildScrollView(
@@ -39,6 +38,7 @@ class Stats extends StatelessWidget {
           ),
         ),
         SfCircularChart(
+          onSelectionChanged: (selectionArgs) {},
           legend: Legend(
               isVisible: true,
               iconWidth: 10,
@@ -47,19 +47,18 @@ class Stats extends StatelessWidget {
               overflowMode: LegendItemOverflowMode.wrap),
           series: [
             DoughnutSeries<ChartData, String>(
-                dataSource: chardata,
-                xValueMapper: (ChartData data, _) => data.name,
-                yValueMapper: (ChartData data, _) => data.number,
-                pointColorMapper: (ChartData data, _) => data.color,
-                dataLabelMapper: (ChartData data, _) => data.name,
-                radius: '90%',
-                innerRadius: '40%',
-                explode: true,
-                explodeIndex: 0,
-                strokeColor: colorWhite,
-                strokeWidth: 1,
-                enableTooltip: true,
-                dataLabelSettings: const DataLabelSettings(isVisible: true))
+              dataSource: chardata,
+              xValueMapper: (ChartData data, _) => data.name,
+              yValueMapper: (ChartData data, _) => data.number,
+              pointColorMapper: (ChartData data, _) => data.color,
+              dataLabelMapper: (ChartData data, _) => data.name,
+              radius: '90%',
+              innerRadius: '40%',
+              explode: true,
+              explodeIndex: 0,
+              enableTooltip: true,
+              dataLabelSettings: const DataLabelSettings(isVisible: true),
+            )
           ],
         )
       ]),
