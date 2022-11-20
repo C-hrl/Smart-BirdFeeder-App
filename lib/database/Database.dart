@@ -24,16 +24,19 @@ Future<Box<List<Bird>>> setupDatabase() async {
     Hive.registerAdapter(BirdAdapter());
   }
   var box = await Hive.openBox<List<Bird>>('birdsBox');
-  if(kDebugMode) { // fill box for testing
-      var now = DateTime.now();
-      await box.clear();
-      addToKey(box, now, Bird('name 1', 'latin 1', 20, "path/sound.ogg", now));
-      addToKey(box, now, Bird('name 2', 'latin 2', 20, "path/sound.ogg", now));
-      var other = now.add(const Duration(days: 3, hours: 9));
-      addToKey(box, other, Bird('name 3', 'latin 3', 20, "path/sound.ogg", other));
+  if (kDebugMode) {
+    // fill box for testing
+    var now = DateTime.now();
+    await box.clear();
+    addToKey(box, now, Bird('name 1', 'latin 1', 20, "path/sound.ogg", now));
+    addToKey(box, now, Bird('name 2', 'latin 2', 20, "path/sound.ogg", now));
+    var other = now.add(const Duration(days: 3, hours: 9));
+    addToKey(
+        box, other, Bird('name 3', 'latin 3', 20, "path/sound.ogg", other));
 
-      var other2 = now.add(const Duration(days: 3, hours: 10));
-      addToKey(box, other2, Bird('name 4', 'latin 4', 20, "path/sound.ogg", other2));
+    var other2 = now.add(const Duration(days: 3, hours: 10));
+    addToKey(
+        box, other2, Bird('name 4', 'latin 4', 20, "path/sound.ogg", other2));
   }
   return box;
 }
@@ -73,9 +76,8 @@ int storeDate(DateTime date) {
 
 void addToKey(Box<List<Bird>> box, DateTime date, Bird bird) {
   int dateInt = storeDate(date);
-  if(box.containsKey(dateInt)) {
+  if (box.containsKey(dateInt)) {
     box.get(dateInt)!.add(bird);
-  
   } else {
     box.put(dateInt, List<Bird>.filled(1, bird, growable: true));
   }
