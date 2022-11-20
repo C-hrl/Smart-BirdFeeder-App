@@ -47,25 +47,20 @@ class BirdList extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final currentlySelectedDay = ref.watch(selectedDayProvider);
     return Expanded(
-      child: FutureBuilder(
-    future: getBirds(currentlySelectedDay),
-    builder:(context, AsyncSnapshot<List<Bird>> snapshot) {
-        if (!snapshot.hasData) {
-            return const Center(child: CircularProgressIndicator());
-         } else {
-            return Container(
-                child: ListView.builder(    
-                    padding: const EdgeInsets.all(15),                                              
+        child: FutureBuilder(
+            future: getBirds(currentlySelectedDay),
+            builder: (context, AsyncSnapshot<List<Bird>> snapshot) {
+              if (!snapshot.hasData) {
+                return const Center(child: CircularProgressIndicator());
+              } else {
+                return ListView.builder(
+                    padding: const EdgeInsets.all(15),
                     itemCount: snapshot.data!.length,
                     itemBuilder: (BuildContext context, int index) {
-                        return BirdCard(bird:snapshot.data![index]);                                           
-                    }
-                )
-            );
-         }
-     }
-)
-    );
+                      return BirdCard(bird: snapshot.data![index]);
+                    });
+              }
+            }));
   }
 }
 

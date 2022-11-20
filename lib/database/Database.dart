@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
@@ -22,20 +20,23 @@ Box<List<Bird>>? cachedDb;
 
 Future<Box<List<Bird>>> setupDatabase() async {
   Hive.init('./BirdsHive/');
-  if(!Hive.isAdapterRegistered(0)) {
+  if (!Hive.isAdapterRegistered(0)) {
     Hive.registerAdapter(BirdAdapter());
   }
   var box = await Hive.openBox<List<Bird>>('birdsBox');
-  if(kDebugMode) { // fill box for testing
-      var now = DateTime.now();
-      box.clear();
-      addToKey(box, now, Bird('name 1', 'latin 1', 20, "path/sound.ogg", now));
-      addToKey(box, now, Bird('name 2', 'latin 2', 20, "path/sound.ogg", now));
-      var other = now.add(const Duration(days: 3, hours: 9));
-      addToKey(box, other, Bird('name 3', 'latin 3', 20, "path/sound.ogg", other));
+  if (kDebugMode) {
+    // fill box for testing
+    var now = DateTime.now();
+    box.clear();
+    addToKey(box, now, Bird('name 1', 'latin 1', 20, "path/sound.ogg", now));
+    addToKey(box, now, Bird('name 2', 'latin 2', 20, "path/sound.ogg", now));
+    var other = now.add(const Duration(days: 3, hours: 9));
+    addToKey(
+        box, other, Bird('name 3', 'latin 3', 20, "path/sound.ogg", other));
 
-      var other2 = now.add(const Duration(days: 3, hours: 10));
-      addToKey(box, other2, Bird('name 4', 'latin 4', 20, "path/sound.ogg", other2));
+    var other2 = now.add(const Duration(days: 3, hours: 10));
+    addToKey(
+        box, other2, Bird('name 4', 'latin 4', 20, "path/sound.ogg", other2));
   }
   return box;
 }
@@ -45,7 +46,8 @@ Future<Box<List<Bird>>> getDatabase() async {
 }
 
 Future<List<Bird>> getBirds(DateTime date) async {
-  return (await getDatabase()).get(storeDate(date), defaultValue: List.empty())!;
+  return (await getDatabase())
+      .get(storeDate(date), defaultValue: List.empty())!;
 }
 
 void main() async {
@@ -68,20 +70,18 @@ void main() async {
   debugPrint(box.toMap().entries.toString());
 }
 
-
 int storeDate(DateTime date) {
   return (DateUtils.dateOnly(date).millisecondsSinceEpoch / 86400000).round();
 }
 
 void addToKey(Box<List<Bird>> box, DateTime date, Bird bird) {
   int dateInt = storeDate(date);
-  if(box.containsKey(dateInt)) {
+  if (box.containsKey(dateInt)) {
     box.get(dateInt)?.add(bird);
-  
   } else {
     box.put(dateInt, List<Bird>.filled(1, bird, growable: true));
-
-  }}
+  }
+}
 
 // Can be generated automatically
 class BirdAdapter extends TypeAdapter<Bird> {
