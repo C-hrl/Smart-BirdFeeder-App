@@ -21,6 +21,7 @@ class CalendarDisplay extends ConsumerWidget {
       child: SingleChildScrollView(
         scrollDirection: Axis.vertical,
         child: Column(
+          mainAxisSize: MainAxisSize.min,
           children: [
             Padding(
               padding: const EdgeInsets.all(8.0),
@@ -32,6 +33,7 @@ class CalendarDisplay extends ConsumerWidget {
                 selectionTextStyle: calendarText,
               ),
             ),
+            const BirdList()
           ],
         ),
       ),
@@ -46,21 +48,17 @@ class BirdList extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final currentlySelectedDay = ref.watch(selectedDayProvider);
-    return Expanded(
+    return Flexible(
+      fit: FlexFit.loose,
       child: FutureBuilder(
     future: getBirds(currentlySelectedDay),
     builder:(context, AsyncSnapshot<List<Bird>> snapshot) {
         if (!snapshot.hasData) {
             return const Center(child: CircularProgressIndicator());
          } else {
-            return Container(
-                child: ListView.builder(    
-                    padding: const EdgeInsets.all(15),                                              
-                    itemCount: snapshot.data!.length,
-                    itemBuilder: (BuildContext context, int index) {
-                        return BirdCard(bird:snapshot.data![index]);                                           
-                    }
-                )
+            return Column(
+                children: 
+                snapshot.data!.map((bird) => BirdCard(bird:bird)).toList()
             );
          }
      }

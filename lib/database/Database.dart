@@ -28,7 +28,7 @@ Future<Box<List<Bird>>> setupDatabase() async {
   var box = await Hive.openBox<List<Bird>>('birdsBox');
   if(kDebugMode) { // fill box for testing
       var now = DateTime.now();
-      box.clear();
+      await box.clear();
       addToKey(box, now, Bird('name 1', 'latin 1', 20, "path/sound.ogg", now));
       addToKey(box, now, Bird('name 2', 'latin 2', 20, "path/sound.ogg", now));
       var other = now.add(const Duration(days: 3, hours: 9));
@@ -76,7 +76,7 @@ int storeDate(DateTime date) {
 void addToKey(Box<List<Bird>> box, DateTime date, Bird bird) {
   int dateInt = storeDate(date);
   if(box.containsKey(dateInt)) {
-    box.get(dateInt)?.add(bird);
+    box.get(dateInt)!.add(bird);
   
   } else {
     box.put(dateInt, List<Bird>.filled(1, bird, growable: true));
