@@ -93,7 +93,7 @@ class SideBar extends ConsumerWidget {
                 }),
             SidebarXItem(
                 icon: Icons.pie_chart_rounded,
-                label: "Calendar",
+                label: "Statistics",
                 onTap: () {
                   ref.watch(selectedWindowProvider.notifier).state =
                       Pages.stats;

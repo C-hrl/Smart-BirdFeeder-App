@@ -33,3 +33,6 @@ TextStyle text =
 
 TextStyle accentText =
     TextStyle(color: colorWhite, fontWeight: FontWeight.w700);
+
+TextStyle calendarTitle = TextStyle(color: colorBlue, fontSize: 20);
+TextStyle calendarText = TextStyle(color: colorWhite);

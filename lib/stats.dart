@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:smart_bird_feeder/theme/styles.dart';
 import 'package:smart_bird_feeder/theme/theme.dart';
 import 'package:smart_bird_feeder/utils.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
@@ -27,10 +28,15 @@ class Stats extends StatelessWidget {
     return Expanded(
         child: SingleChildScrollView(
       child: Column(children: [
-        SfDateRangePicker(
-          view: DateRangePickerView.month,
-          viewSpacing: 10,
-          selectionMode: DateRangePickerSelectionMode.extendableRange,
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: SfDateRangePicker(
+            headerStyle: DateRangePickerHeaderStyle(
+                textAlign: TextAlign.center, textStyle: calendarTitle),
+            view: DateRangePickerView.month,
+            viewSpacing: 10,
+            selectionMode: DateRangePickerSelectionMode.extendableRange,
+          ),
         ),
         SfCircularChart(
           legend: Legend(
@@ -47,7 +53,7 @@ class Stats extends StatelessWidget {
                 pointColorMapper: (ChartData data, _) => data.color,
                 dataLabelMapper: (ChartData data, _) => data.name,
                 radius: '90%',
-                innerRadius: '50%',
+                innerRadius: '40%',
                 explode: true,
                 explodeIndex: 0,
                 strokeColor: colorWhite,

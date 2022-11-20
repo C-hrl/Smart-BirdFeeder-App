@@ -7,3 +7,4 @@ Color colorGoldenAccent =
 Color colorGolden =
     colorHarmonization(const Color.fromARGB(255, 228, 199, 155));
 Color colorWhite = colorHarmonization(Colors.white);
+Color colorBlue = colorHarmonization(Colors.blue);

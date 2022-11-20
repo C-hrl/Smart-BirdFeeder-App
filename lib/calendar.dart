@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:smart_bird_feeder/theme/styles.dart';
 import 'package:smart_bird_feeder/theme/theme.dart';
 import 'package:smart_bird_feeder/utils.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
@@ -17,7 +18,19 @@ class CalendarDisplay extends ConsumerWidget {
     final currentlySelectedDay = ref.watch(selectedDayProvider);
     return Expanded(
       child: Column(
-        children: [SfDateRangePicker(), const BirdList()],
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: SfDateRangePicker(
+              selectionColor: colorBlue,
+              todayHighlightColor: colorBlue,
+              headerStyle: DateRangePickerHeaderStyle(
+                  textAlign: TextAlign.center, textStyle: calendarTitle),
+              selectionTextStyle: calendarText,
+            ),
+          ),
+          const BirdList()
+        ],
       ),
     );
   }
@@ -33,7 +46,21 @@ class BirdList extends ConsumerWidget {
       child: ListView(
         padding: const EdgeInsets.all(15),
         // ignore: prefer_const_constructors
-        children: const [BirdCard(), BirdCard(), BirdCard(), BirdCard()],
+        children: const [
+          BirdCard(),
+          BirdCard(),
+          BirdCard(),
+          BirdCard(),
+          BirdCard(),
+          BirdCard(),
+          BirdCard(),
+          BirdCard(),
+          BirdCard(),
+          BirdCard(),
+          BirdCard(),
+          BirdCard(),
+          BirdCard()
+        ],
       ),
     );
   }
