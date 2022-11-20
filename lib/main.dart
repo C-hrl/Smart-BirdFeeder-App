@@ -20,7 +20,7 @@ class SmartBirdFeederApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-        title: 'Flutter Demo',
+        title: 'Smart Bird Feeder',
         home: Scaffold(
             appBar: AppBar(
               backgroundColor: colorGoldenAccent,
