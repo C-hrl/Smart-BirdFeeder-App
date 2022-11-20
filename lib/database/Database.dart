@@ -14,7 +14,8 @@ class Bird {
   Bird(this.name, this.latinName, this.temperature, this.soundPath, this.date);
 
   @override
-  String toString() => "Bird( name:$name; latinName:$latinName; temperature:$temperature; soundPath:$soundPath; date:$date)"; // Just for print()
+  String toString() =>
+      "Bird( name:$name; latinName:$latinName; temperature:$temperature; soundPath:$soundPath; date:$date)"; // Just for print()
 }
 
 Box<List<Bird>>? cachedDb;
@@ -49,7 +50,7 @@ Future<List<Bird>> getBirds(DateTime date) async {
 
 void main() async {
   // Register Adapter
-  Hive.registerAdapter(BirdAdapter()); 
+  Hive.registerAdapter(BirdAdapter());
 
   var box = await Hive.openBox<List<Bird>>('birdsBox');
 
@@ -61,7 +62,8 @@ void main() async {
   addToKey(box, other, Bird('name 3', 'latin 3', 20, "path/sound.ogg", other));
 
   var other2 = now.add(const Duration(days: 3, hours: 10));
-  addToKey(box, other2, Bird('name 4', 'latin 4', 20, "path/sound.ogg", other2));
+  addToKey(
+      box, other2, Bird('name 4', 'latin 4', 20, "path/sound.ogg", other2));
 
   debugPrint(box.toMap().entries.toString());
 }
@@ -88,7 +90,8 @@ class BirdAdapter extends TypeAdapter<Bird> {
 
   @override
   Bird read(BinaryReader reader) {
-    return Bird(reader.readString(), reader.readString(), reader.readInt(), reader.readString(), DateTime.parse(reader.readString()));
+    return Bird(reader.readString(), reader.readString(), reader.readInt(),
+        reader.readString(), DateTime.parse(reader.readString()));
   }
 
   @override

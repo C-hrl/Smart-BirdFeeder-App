@@ -4,8 +4,8 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:sidebarx/sidebarx.dart';
 import 'package:smart_bird_feeder/calendar.dart';
 import 'package:smart_bird_feeder/stats.dart';
-import 'package:smart_bird_feeder/styles.dart';
-import 'package:smart_bird_feeder/theme.dart';
+import 'package:smart_bird_feeder/theme/styles.dart';
+import 'package:smart_bird_feeder/theme/theme.dart';
 
 final extendSidebar = StateProvider(((ref) => false));
 
@@ -20,7 +20,7 @@ class SmartBirdFeederApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-        title: 'Flutter Demo',
+        title: 'Smart Bird Feeder',
         home: Scaffold(
             appBar: AppBar(
               backgroundColor: colorGoldenAccent,
@@ -93,7 +93,7 @@ class SideBar extends ConsumerWidget {
                 }),
             SidebarXItem(
                 icon: Icons.pie_chart_rounded,
-                label: "Calendar",
+                label: "Statistics",
                 onTap: () {
                   ref.watch(selectedWindowProvider.notifier).state =
                       Pages.stats;

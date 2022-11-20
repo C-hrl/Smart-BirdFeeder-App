@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:smart_bird_feeder/database/Database.dart';
-import 'package:smart_bird_feeder/theme.dart';
+import 'package:smart_bird_feeder/theme/styles.dart';
+import 'package:smart_bird_feeder/theme/theme.dart';
 import 'package:smart_bird_feeder/utils.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 
@@ -17,8 +18,22 @@ class CalendarDisplay extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final currentlySelectedDay = ref.watch(selectedDayProvider);
     return Expanded(
-      child: Column(
-        children: [SfDateRangePicker(), const BirdList()],
+      child: SingleChildScrollView(
+        scrollDirection: Axis.vertical,
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: SfDateRangePicker(
+                selectionColor: colorBlue,
+                todayHighlightColor: colorBlue,
+                headerStyle: DateRangePickerHeaderStyle(
+                    textAlign: TextAlign.center, textStyle: calendarTitle),
+                selectionTextStyle: calendarText,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
