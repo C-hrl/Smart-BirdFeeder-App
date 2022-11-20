@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
@@ -22,7 +20,7 @@ Box<List<Bird>>? cachedDb;
 
 Future<Box<List<Bird>>> setupDatabase() async {
   Hive.init('./BirdsHive/');
-  if(!Hive.isAdapterRegistered(0)) {
+  if (!Hive.isAdapterRegistered(0)) {
     Hive.registerAdapter(BirdAdapter());
   }
   var box = await Hive.openBox<List<Bird>>('birdsBox');
@@ -45,7 +43,8 @@ Future<Box<List<Bird>>> getDatabase() async {
 }
 
 Future<List<Bird>> getBirds(DateTime date) async {
-  return (await getDatabase()).get(storeDate(date), defaultValue: List.empty())!;
+  return (await getDatabase())
+      .get(storeDate(date), defaultValue: List.empty())!;
 }
 
 void main() async {
@@ -68,7 +67,6 @@ void main() async {
   debugPrint(box.toMap().entries.toString());
 }
 
-
 int storeDate(DateTime date) {
   return (DateUtils.dateOnly(date).millisecondsSinceEpoch / 86400000).round();
 }
@@ -80,8 +78,8 @@ void addToKey(Box<List<Bird>> box, DateTime date, Bird bird) {
   
   } else {
     box.put(dateInt, List<Bird>.filled(1, bird, growable: true));
-
-  }}
+  }
+}
 
 // Can be generated automatically
 class BirdAdapter extends TypeAdapter<Bird> {
