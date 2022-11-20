@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:smart_bird_feeder/database/Database.dart';
 import 'package:smart_bird_feeder/theme.dart';
 import 'package:smart_bird_feeder/utils.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
@@ -29,19 +30,33 @@ class BirdList extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final currentlySelectedDay = ref.watch(selectedDayProvider);
     return Expanded(
-      child: ListView(
-        padding: const EdgeInsets.all(15),
-        // ignore: prefer_const_constructors
-        children: const [BirdCard(), BirdCard(), BirdCard(), BirdCard()],
-      ),
+      child: FutureBuilder(
+    future: getBirds(currentlySelectedDay),
+    builder:(context, AsyncSnapshot<List<Bird>> snapshot) {
+        if (!snapshot.hasData) {
+            return const Center(child: CircularProgressIndicator());
+         } else {
+            return Container(
+                child: ListView.builder(    
+                    padding: const EdgeInsets.all(15),                                              
+                    itemCount: snapshot.data!.length,
+                    itemBuilder: (BuildContext context, int index) {
+                        return BirdCard(bird:snapshot.data![index]);                                           
+                    }
+                )
+            );
+         }
+     }
+)
     );
   }
 }
 
 class BirdCard extends StatelessWidget {
-  const BirdCard({Key? key}) : super(key: key);
-
+  const BirdCard({Key? key, required this.bird}) : super(key: key);
+  final Bird bird;
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -71,7 +86,7 @@ class BirdCard extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: const [Text("Nom Normal"), Text("Nom Latin")],
+                children: [Text(bird.name), Text(bird.latinName)],
               ),
             )
           ],

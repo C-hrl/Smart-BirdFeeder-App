@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 
@@ -19,12 +20,31 @@ class Bird {
 Box<List<Bird>>? cachedDb;
 
 Future<Box<List<Bird>>> setupDatabase() async {
-  Hive.registerAdapter(BirdAdapter());
-  return await Hive.openBox<List<Bird>>('birdsBox');
+  Hive.init('./BirdsHive/');
+  if(!Hive.isAdapterRegistered(0)) {
+    Hive.registerAdapter(BirdAdapter());
+  }
+  var box = await Hive.openBox<List<Bird>>('birdsBox');
+  if(kDebugMode) { // fill box for testing
+      var now = DateTime.now();
+      box.clear();
+      addToKey(box, now, Bird('name 1', 'latin 1', 20, "path/sound.ogg", now));
+      addToKey(box, now, Bird('name 2', 'latin 2', 20, "path/sound.ogg", now));
+      var other = now.add(const Duration(days: 3, hours: 9));
+      addToKey(box, other, Bird('name 3', 'latin 3', 20, "path/sound.ogg", other));
+
+      var other2 = now.add(const Duration(days: 3, hours: 10));
+      addToKey(box, other2, Bird('name 4', 'latin 4', 20, "path/sound.ogg", other2));
+  }
+  return box;
 }
 
 Future<Box<List<Bird>>> getDatabase() async {
   return cachedDb == null ? await setupDatabase() : cachedDb!;
+}
+
+Future<List<Bird>> getBirds(DateTime date) async {
+  return (await getDatabase()).get(storeDate(date), defaultValue: List.empty())!;
 }
 
 void main() async {
@@ -46,6 +66,7 @@ void main() async {
   debugPrint(box.toMap().entries.toString());
 }
 
+
 int storeDate(DateTime date) {
   return (DateUtils.dateOnly(date).millisecondsSinceEpoch / 86400000).round();
 }
@@ -53,10 +74,10 @@ int storeDate(DateTime date) {
 void addToKey(Box<List<Bird>> box, DateTime date, Bird bird) {
   int dateInt = storeDate(date);
   if(box.containsKey(dateInt)) {
-    box.get(dateInt)!.add(bird);
+    box.get(dateInt)?.add(bird);
   
   } else {
-    box.put(dateInt, List.filled(1, bird, growable: true));
+    box.put(dateInt, List<Bird>.filled(1, bird, growable: true));
 
   }}
 
