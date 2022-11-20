@@ -17,50 +17,22 @@ class CalendarDisplay extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final currentlySelectedDay = ref.watch(selectedDayProvider);
     return Expanded(
-      child: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: SfDateRangePicker(
-              selectionColor: colorBlue,
-              todayHighlightColor: colorBlue,
-              headerStyle: DateRangePickerHeaderStyle(
-                  textAlign: TextAlign.center, textStyle: calendarTitle),
-              selectionTextStyle: calendarText,
+      child: SingleChildScrollView(
+        scrollDirection: Axis.vertical,
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: SfDateRangePicker(
+                selectionColor: colorBlue,
+                todayHighlightColor: colorBlue,
+                headerStyle: DateRangePickerHeaderStyle(
+                    textAlign: TextAlign.center, textStyle: calendarTitle),
+                selectionTextStyle: calendarText,
+              ),
             ),
-          ),
-          const BirdList()
-        ],
-      ),
-    );
-  }
-}
-
-//List of birds displayed under the calendar
-class BirdList extends ConsumerWidget {
-  const BirdList({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return Expanded(
-      child: ListView(
-        padding: const EdgeInsets.all(15),
-        // ignore: prefer_const_constructors
-        children: const [
-          BirdCard(),
-          BirdCard(),
-          BirdCard(),
-          BirdCard(),
-          BirdCard(),
-          BirdCard(),
-          BirdCard(),
-          BirdCard(),
-          BirdCard(),
-          BirdCard(),
-          BirdCard(),
-          BirdCard(),
-          BirdCard()
-        ],
+          ],
+        ),
       ),
     );
   }
