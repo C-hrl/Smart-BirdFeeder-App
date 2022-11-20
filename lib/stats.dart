@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:smart_bird_feeder/theme.dart';
+import 'package:smart_bird_feeder/theme/theme.dart';
 import 'package:smart_bird_feeder/utils.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';

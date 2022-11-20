@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:smart_bird_feeder/theme.dart';
+import 'package:smart_bird_feeder/theme/theme.dart';
 import 'package:smart_bird_feeder/utils.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 
