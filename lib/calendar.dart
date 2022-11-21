@@ -16,7 +16,7 @@ class CalendarDisplay extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final currentlySelectedDay = ref.watch(selectedDayProvider);
+    DateRangePickerController _controller = DateRangePickerController();
     return Expanded(
       child: SingleChildScrollView(
         scrollDirection: Axis.vertical,
@@ -26,11 +26,49 @@ class CalendarDisplay extends ConsumerWidget {
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: SfDateRangePicker(
+                controller: _controller,
                 onSelectionChanged: (date) {
                   ref.watch(selectedDayProvider.notifier).state = date.value;
-                  debugPrint(date.value.toString());
+                },
+                cellBuilder: (BuildContext context,
+                    DateRangePickerCellDetails cellDetails) {
+                  if (_controller.view == DateRangePickerView.month) {
+                    return Container(
+                      width: cellDetails.bounds.width,
+                      height: cellDetails.bounds.height,
+                      alignment: Alignment.center,
+                      child: Text(cellDetails.date.day.toString()),
+                    );
+                  } else if (_controller.view == DateRangePickerView.year) {
+                    return Container(
+                      width: cellDetails.bounds.width,
+                      height: cellDetails.bounds.height,
+                      alignment: Alignment.center,
+                      child: Text(cellDetails.date.month.toString()),
+                    );
+                  } else if (_controller.view == DateRangePickerView.decade) {
+                    return Container(
+                      width: cellDetails.bounds.width,
+                      height: cellDetails.bounds.height,
+                      alignment: Alignment.center,
+                      child: Text(cellDetails.date.year.toString()),
+                    );
+                  } else {
+                    final int yearValue = (cellDetails.date.year ~/ 10) * 10;
+                    return Container(
+                      width: cellDetails.bounds.width,
+                      height: cellDetails.bounds.height,
+                      alignment: Alignment.center,
+                      child: Text(yearValue.toString() +
+                          ' - ' +
+                          (yearValue + 9).toString()),
+                    );
+                  }
                 },
                 selectionColor: colorBlue,
+                //TODO
+                /* monthCellStyle: DateRangePickerMonthCellStyle(
+                    cellDecoration: BoxDecoration(shape: BoxShape.circle)), */
                 todayHighlightColor: colorBlue,
                 headerStyle: DateRangePickerHeaderStyle(
                     textAlign: TextAlign.center, textStyle: calendarTitle),
