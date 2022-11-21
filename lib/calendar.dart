@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:smart_bird_feeder/database/Database.dart';
+import 'package:smart_bird_feeder/database/db.dart';
 import 'package:smart_bird_feeder/theme/styles.dart';
 import 'package:smart_bird_feeder/theme/theme.dart';
 import 'package:smart_bird_feeder/utils.dart';
@@ -26,6 +26,10 @@ class CalendarDisplay extends ConsumerWidget {
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: SfDateRangePicker(
+                onSelectionChanged: (date) {
+                  ref.watch(selectedDayProvider.notifier).state = date.value;
+                  debugPrint(date.value.toString());
+                },
                 selectionColor: colorBlue,
                 todayHighlightColor: colorBlue,
                 headerStyle: DateRangePickerHeaderStyle(
@@ -49,21 +53,19 @@ class BirdList extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final currentlySelectedDay = ref.watch(selectedDayProvider);
     return Flexible(
-      fit: FlexFit.loose,
-      child: FutureBuilder(
-    future: getBirds(currentlySelectedDay),
-    builder:(context, AsyncSnapshot<List<Bird>> snapshot) {
-        if (!snapshot.hasData) {
-            return const Center(child: CircularProgressIndicator());
-         } else {
-            return Column(
-                children: 
-                snapshot.data!.map((bird) => BirdCard(bird:bird)).toList()
-            );
-         }
-     }
-)
-    );
+        fit: FlexFit.loose,
+        child: FutureBuilder(
+            future: getBirds(currentlySelectedDay),
+            builder: (context, AsyncSnapshot<List<Bird>> snapshot) {
+              if (!snapshot.hasData) {
+                return const Center(child: CircularProgressIndicator());
+              } else {
+                return Column(
+                    children: snapshot.data!
+                        .map((bird) => BirdCard(bird: bird))
+                        .toList());
+              }
+            }));
   }
 }
 

@@ -1,6 +1,6 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
+import 'package:path_provider/path_provider.dart';
 
 class Bird {
   String name;
@@ -19,25 +19,26 @@ class Bird {
 Box<List<Bird>>? cachedDb;
 
 Future<Box<List<Bird>>> setupDatabase() async {
-  Hive.init('./BirdsHive/');
+  final directory = await getApplicationDocumentsDirectory();
+  Hive.init(directory.path + "/SmartBirdFeeder");
+
   if (!Hive.isAdapterRegistered(0)) {
     Hive.registerAdapter(BirdAdapter());
   }
   var box = await Hive.openBox<List<Bird>>('birdsBox');
-  if (kDebugMode) {
-    // fill box for testing
-    var now = DateTime.now();
-    await box.clear();
-    addToKey(box, now, Bird('name 1', 'latin 1', 20, "path/sound.ogg", now));
-    addToKey(box, now, Bird('name 2', 'latin 2', 20, "path/sound.ogg", now));
-    var other = now.add(const Duration(days: 3, hours: 9));
-    addToKey(
-        box, other, Bird('name 3', 'latin 3', 20, "path/sound.ogg", other));
+  // fill box for testing
+  var now = DateTime.now();
+  await box.clear();
+  addToKey(box, now, Bird('Mésange', 'Mésangus?', 20, "path/sound.ogg", now));
+  addToKey(box, now, Bird('Rouge-Gorge', '????', 20, "path/sound.ogg", now));
+  var other = now.add(const Duration(days: 3, hours: 9));
+  addToKey(
+      box, other, Bird('Moineau', 'Moinneau?', 20, "path/sound.ogg", other));
 
-    var other2 = now.add(const Duration(days: 3, hours: 10));
-    addToKey(
-        box, other2, Bird('name 4', 'latin 4', 20, "path/sound.ogg", other2));
-  }
+  var other2 = now.add(const Duration(days: 3, hours: 10));
+  addToKey(box, other2,
+      Bird('Merle', "Nom latin d'un merle", 20, "path/sound.ogg", other2));
+
   return box;
 }
 
