@@ -143,30 +143,37 @@ class BirdCard extends StatelessWidget {
                 children: [Text(bird.name), Text(bird.latinName)],
               ),
             ),
-            Padding( //Temperature
-              padding: const EdgeInsets.all(8.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [const FaIcon(FontAwesomeIcons.temperatureHalf), Text("${bird.temperature} °C")],
-              ),
-            ),
-            Padding( //Humidity
-              padding: const EdgeInsets.all(8.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [const FaIcon(BirdFeederIcons.dropletLight), Text("${bird.humidity} %")],
-              ),
-            ),
-            Padding( //Pressure
-              padding: const EdgeInsets.all(8.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [const FaIcon(FontAwesomeIcons.weightHanging), Text("${bird.pressure} %")],
-              ),
-            ),
+            Expanded(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                    Padding( //Temperature
+                      padding: const EdgeInsets.all(8.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [const FaIcon(FontAwesomeIcons.temperatureHalf, color: Colors.red,), Text("${bird.temperature} °C")],
+                      ),
+                    ),
+                    Padding( //Humidity
+                      padding: const EdgeInsets.all(8.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [const FaIcon(FontAwesomeIcons.droplet, color: Colors.lightBlue,), Text("${bird.humidity} %")],
+                      ),
+                    ),
+                    Padding( //Pressure
+                      padding: const EdgeInsets.all(8.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [const FaIcon(FontAwesomeIcons.weightHanging, color: Colors.grey,), Text("${bird.pressure} %")],
+                      ),
+                    ),
+                ],
+            ),)
+            
           ],
         ),
       ),
