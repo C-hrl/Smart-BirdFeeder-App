@@ -5,15 +5,17 @@ import 'package:path_provider/path_provider.dart';
 class Bird {
   String name;
   String latinName;
-  int temperature;
+  double temperature; //°C
+  double humidity; //%
+  double pressure; //kPa
   String soundPath;
   DateTime date;
 
-  Bird(this.name, this.latinName, this.temperature, this.soundPath, this.date);
+  Bird(this.name, this.latinName, this.temperature, this.humidity, this.pressure, this.soundPath, this.date);
 
   @override
   String toString() =>
-      "Bird( name:$name; latinName:$latinName; temperature:$temperature; soundPath:$soundPath; date:$date)"; // Just for print()
+      "Bird( name:$name; latinName:$latinName; temperature:$temperature; humidity:$humidity; pressure:$pressure; soundPath:$soundPath; date:$date)"; // Just for print()
 }
 
 Box<List<Bird>>? cachedDb;
@@ -29,15 +31,15 @@ Future<Box<List<Bird>>> setupDatabase() async {
   // fill box for testing
   var now = DateTime.now();
   await box.clear();
-  addToKey(box, now, Bird('Mésange', 'Mésangus?', 20, "path/sound.ogg", now));
-  addToKey(box, now, Bird('Rouge-Gorge', '????', 20, "path/sound.ogg", now));
+  addToKey(box, now, Bird('Mésange', 'Mésangus?', 20.0, 58.0, 98.4, "path/sound.ogg", now));
+  addToKey(box, now, Bird('Rouge-Gorge', '????', 20, 58.0, 98.4, "path/sound.ogg", now));
   var other = now.add(const Duration(days: 3, hours: 9));
   addToKey(
-      box, other, Bird('Moineau', 'Moinneau?', 20, "path/sound.ogg", other));
+      box, other, Bird('Moineau', 'Moinneau?', 20, 58.0, 98.4, "path/sound.ogg", other));
 
   var other2 = now.add(const Duration(days: 3, hours: 10));
   addToKey(box, other2,
-      Bird('Merle', "Nom latin d'un merle", 20, "path/sound.ogg", other2));
+      Bird('Merle', "Nom latin d'un merle", 20, 58.0, 98.4, "path/sound.ogg", other2));
 
   return box;
 }
@@ -59,14 +61,14 @@ void main() async {
 
   var now = DateTime.now();
 
-  addToKey(box, now, Bird('name 1', 'latin 1', 20, "path/sound.ogg", now));
-  addToKey(box, now, Bird('name 2', 'latin 2', 20, "path/sound.ogg", now));
+  addToKey(box, now, Bird('name 1', 'latin 1', 20, 58.0, 98.4, "path/sound.ogg", now));
+  addToKey(box, now, Bird('name 2', 'latin 2', 20, 58.0, 98.4, "path/sound.ogg", now));
   var other = now.add(const Duration(days: 3, hours: 9));
-  addToKey(box, other, Bird('name 3', 'latin 3', 20, "path/sound.ogg", other));
+  addToKey(box, other, Bird('name 3', 'latin 3', 20, 58.0, 98.4, "path/sound.ogg", other));
 
   var other2 = now.add(const Duration(days: 3, hours: 10));
   addToKey(
-      box, other2, Bird('name 4', 'latin 4', 20, "path/sound.ogg", other2));
+      box, other2, Bird('name 4', 'latin 4', 20, 58.0, 98.4, "path/sound.ogg", other2));
 
   debugPrint(box.toMap().entries.toString());
 }
@@ -91,15 +93,22 @@ class BirdAdapter extends TypeAdapter<Bird> {
 
   @override
   Bird read(BinaryReader reader) {
-    return Bird(reader.readString(), reader.readString(), reader.readInt(),
-        reader.readString(), DateTime.parse(reader.readString()));
+    return Bird(reader.readString(), //name
+                reader.readString(), //latin
+                reader.readDouble(), //temperature
+                reader.readDouble(), //humidity
+                reader.readDouble(), //pressure
+                reader.readString(), //soundPath
+                DateTime.parse(reader.readString())); //date
   }
 
   @override
   void write(BinaryWriter writer, Bird obj) {
     writer.writeString(obj.name);
     writer.writeString(obj.latinName);
-    writer.writeInt(obj.temperature);
+    writer.writeDouble(obj.temperature);
+    writer.writeDouble(obj.humidity);
+    writer.writeDouble(obj.pressure);
     writer.writeString(obj.soundPath);
     writer.writeString(obj.date.toString());
   }

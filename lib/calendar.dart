@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:smart_bird_feeder/database/db.dart';
+import 'package:smart_bird_feeder/theme/icons.dart';
 import 'package:smart_bird_feeder/theme/styles.dart';
 import 'package:smart_bird_feeder/theme/theme.dart';
 import 'package:smart_bird_feeder/utils.dart';
@@ -141,7 +142,31 @@ class BirdCard extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [Text(bird.name), Text(bird.latinName)],
               ),
-            )
+            ),
+            Padding( //Temperature
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [const FaIcon(FontAwesomeIcons.temperatureHalf), Text("${bird.temperature} °C")],
+              ),
+            ),
+            Padding( //Humidity
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [const FaIcon(BirdFeederIcons.dropletLight), Text("${bird.humidity} %")],
+              ),
+            ),
+            Padding( //Pressure
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [const FaIcon(FontAwesomeIcons.weightHanging), Text("${bird.pressure} %")],
+              ),
+            ),
           ],
         ),
       ),
