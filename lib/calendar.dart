@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:smart_bird_feeder/database/db.dart';
-import 'package:smart_bird_feeder/theme/icons.dart';
 import 'package:smart_bird_feeder/theme/styles.dart';
 import 'package:smart_bird_feeder/theme/theme.dart';
 import 'package:smart_bird_feeder/utils.dart';
@@ -34,17 +33,57 @@ class CalendarDisplay extends ConsumerWidget {
                 cellBuilder: (BuildContext context,
                     DateRangePickerCellDetails cellDetails) {
                   if (_controller.view == DateRangePickerView.month) {
-                    return Container(
-                      width: cellDetails.bounds.width,
-                      height: cellDetails.bounds.height,
-                      alignment: Alignment.center,
-                      child: Text(cellDetails.date.day.toString()),
+                    return Stack(
+                      children: [
+                        Container(
+                          width: cellDetails.bounds.width,
+                          height: cellDetails.bounds.height,
+                          alignment: Alignment.center,
+                          decoration: BoxDecoration(
+                              color: _controller.selectedDate == cellDetails.date? colorBlue : 
+                              /*cellDetails.date.day == DateTime.now().day ? colorBlue.withOpacity(0.5) :*/ null,
+                              border: cellDetails.date.day == DateTime.now().day ? Border.all(width: 1, color: colorBlue) : null,
+                              shape: BoxShape.circle,
+                            ),
+                          child: Text(cellDetails.date.day.toString(), style: TextStyle(
+                            fontSize: 13,
+                            color: cellDetails.date == _controller.selectedDate? Colors.white: 
+                              cellDetails.date.day == DateTime.now().day ? colorBlue : null
+                          ),),
+                        ),
+                        Positioned(
+                          top: 5*cellDetails.bounds.height/10,
+                          left: 6*cellDetails.bounds.width/10,
+                          child: 
+                          
+                          Container(
+                            width: 15,
+                          height: 15,
+                          decoration: BoxDecoration(
+                              color: colorBlue,
+                              shape: BoxShape.circle,
+                            ),
+                          child: Text('5', //won't be const in the future
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontSize: 11,
+                            color: Colors.white
+                             
+                          ),),
+                        ))
+                        
+                        ],
                     );
                   } else if (_controller.view == DateRangePickerView.year) {
                     return Container(
                       width: cellDetails.bounds.width,
                       height: cellDetails.bounds.height,
                       alignment: Alignment.center,
+                      decoration: BoxDecoration(
+                          color: _controller.selectedDate == cellDetails.date? colorBlue : 
+                          cellDetails.date.month == DateTime.now().month ? colorBlue.withOpacity(0.5) : null, 
+                          shape: BoxShape.circle,
+                        ),
                       child: Text(cellDetails.date.month.toString()),
                     );
                   } else if (_controller.view == DateRangePickerView.decade) {
@@ -66,7 +105,11 @@ class CalendarDisplay extends ConsumerWidget {
                     );
                   }
                 },
-                selectionColor: colorBlue,
+                monthCellStyle: const DateRangePickerMonthCellStyle(
+          
+                  cellDecoration: BoxDecoration(color: Colors.transparent)
+                  ),
+                selectionColor: Colors.white.withOpacity(0.0),
                 //TODO
                 /* monthCellStyle: DateRangePickerMonthCellStyle(
                     cellDecoration: BoxDecoration(shape: BoxShape.circle)), */
