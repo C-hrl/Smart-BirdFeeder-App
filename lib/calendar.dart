@@ -33,46 +33,55 @@ class CalendarDisplay extends ConsumerWidget {
                 cellBuilder: (BuildContext context,
                     DateRangePickerCellDetails cellDetails) {
                   if (_controller.view == DateRangePickerView.month) {
-                    return Stack(
-                      children: [
-                        Container(
-                          width: cellDetails.bounds.width,
-                          height: cellDetails.bounds.height,
-                          alignment: Alignment.center,
-                          decoration: BoxDecoration(
-                              color: _controller.selectedDate == cellDetails.date? colorBlue : 
-                              /*cellDetails.date.day == DateTime.now().day ? colorBlue.withOpacity(0.5) :*/ null,
-                              border: cellDetails.date.day == DateTime.now().day ? Border.all(width: 1, color: colorBlue) : null,
-                              shape: BoxShape.circle,
-                            ),
-                          child: Text(cellDetails.date.day.toString(), style: TextStyle(
-                            fontSize: 13,
-                            color: cellDetails.date == _controller.selectedDate? Colors.white: 
-                              cellDetails.date.day == DateTime.now().day ? colorBlue : null
-                          ),),
-                        ),
-                        Positioned(
-                          top: 5*cellDetails.bounds.height/10,
-                          left: 6*cellDetails.bounds.width/10,
-                          child: 
-                          
+                    return Center(
+                      child: Stack(
+                        children: [
                           Container(
-                            width: 15,
-                          height: 15,
-                          decoration: BoxDecoration(
-                              color: colorBlue,
+                            width: cellDetails.bounds.width * 0.92,
+                            height: cellDetails.bounds.height * 0.92,
+                            alignment: Alignment.center,
+                            decoration: BoxDecoration(
+                              color: _controller.selectedDate ==
+                                      cellDetails.date
+                                  ? colorBlue
+                                  : /*cellDetails.date.day == DateTime.now().day ? colorBlue.withOpacity(0.5) :*/ null,
+                              border: cellDetails.date.day == DateTime.now().day
+                                  ? Border.all(width: 1, color: colorBlue)
+                                  : null,
                               shape: BoxShape.circle,
                             ),
-                          child: Text('5', //won't be const in the future
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontSize: 11,
-                            color: Colors.white
-                             
-                          ),),
-                        ))
-                        
+                            child: Text(
+                              cellDetails.date.day.toString(),
+                              style: TextStyle(
+                                  fontSize: 13,
+                                  color: cellDetails.date ==
+                                          _controller.selectedDate
+                                      ? Colors.white
+                                      : cellDetails.date.day ==
+                                              DateTime.now().day
+                                          ? colorBlue
+                                          : null),
+                            ),
+                          ),
+                          Positioned(
+                              bottom: cellDetails.bounds.height * 0.01,
+                              right: cellDetails.bounds.width * 0.1,
+                              child: Container(
+                                width: 12,
+                                height: 12,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(2),
+                                  color: colorGolden,
+                                ),
+                                child: Text(
+                                  '5', //won't be const in the future
+                                  textAlign: TextAlign.center,
+                                  style:
+                                      TextStyle(fontSize: 9, color: colorWhite),
+                                ),
+                              ))
                         ],
+                      ),
                     );
                   } else if (_controller.view == DateRangePickerView.year) {
                     return Container(
@@ -80,10 +89,13 @@ class CalendarDisplay extends ConsumerWidget {
                       height: cellDetails.bounds.height,
                       alignment: Alignment.center,
                       decoration: BoxDecoration(
-                          color: _controller.selectedDate == cellDetails.date? colorBlue : 
-                          cellDetails.date.month == DateTime.now().month ? colorBlue.withOpacity(0.5) : null, 
-                          shape: BoxShape.circle,
-                        ),
+                        color: _controller.selectedDate == cellDetails.date
+                            ? colorBlue
+                            : cellDetails.date.month == DateTime.now().month
+                                ? colorBlue.withOpacity(0.5)
+                                : null,
+                        shape: BoxShape.circle,
+                      ),
                       child: Text(cellDetails.date.month.toString()),
                     );
                   } else if (_controller.view == DateRangePickerView.decade) {
@@ -106,13 +118,8 @@ class CalendarDisplay extends ConsumerWidget {
                   }
                 },
                 monthCellStyle: const DateRangePickerMonthCellStyle(
-          
-                  cellDecoration: BoxDecoration(color: Colors.transparent)
-                  ),
+                    cellDecoration: BoxDecoration(color: Colors.transparent)),
                 selectionColor: Colors.white.withOpacity(0.0),
-                //TODO
-                /* monthCellStyle: DateRangePickerMonthCellStyle(
-                    cellDecoration: BoxDecoration(shape: BoxShape.circle)), */
                 todayHighlightColor: colorBlue,
                 headerStyle: DateRangePickerHeaderStyle(
                     textAlign: TextAlign.center, textStyle: calendarTitle),
@@ -190,33 +197,54 @@ class BirdCard extends StatelessWidget {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                    Padding( //Temperature
-                      padding: const EdgeInsets.all(8.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [const FaIcon(FontAwesomeIcons.temperatureHalf, color: Colors.red,), Text("${bird.temperature} °C")],
-                      ),
+                  Padding(
+                    //Temperature
+                    padding: const EdgeInsets.all(8.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        const FaIcon(
+                          FontAwesomeIcons.temperatureHalf,
+                          color: Colors.red,
+                        ),
+                        Text("${bird.temperature} °C")
+                      ],
                     ),
-                    Padding( //Humidity
-                      padding: const EdgeInsets.all(8.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [const FaIcon(FontAwesomeIcons.droplet, color: Colors.lightBlue,), Text("${bird.humidity} %")],
-                      ),
+                  ),
+                  Padding(
+                    //Humidity
+                    padding: const EdgeInsets.all(8.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        const FaIcon(
+                          FontAwesomeIcons.droplet,
+                          color: Colors.lightBlue,
+                        ),
+                        Text("${bird.humidity} %")
+                      ],
                     ),
-                    Padding( //Pressure
-                      padding: const EdgeInsets.all(8.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [const FaIcon(FontAwesomeIcons.weightHanging, color: Colors.grey,), Text("${bird.pressure} %")],
-                      ),
+                  ),
+                  Padding(
+                    //Pressure
+                    padding: const EdgeInsets.all(8.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        const FaIcon(
+                          FontAwesomeIcons.weightHanging,
+                          color: Colors.grey,
+                        ),
+                        Text("${bird.pressure} %")
+                      ],
                     ),
+                  ),
                 ],
-            ),)
-            
+              ),
+            )
           ],
         ),
       ),
