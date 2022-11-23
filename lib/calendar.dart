@@ -46,9 +46,12 @@ class CalendarDisplay extends ConsumerWidget {
                                   _controller.selectedDate == cellDetails.date
                                       ? colorBlue.withOpacity(0.6)
                                       : null,
-                              border: cellDetails.date.day == DateTime.now().day
-                                  ? Border.all(width: 1, color: colorBlue)
-                                  : null,
+                              border:
+                                  cellDetails.date.day == DateTime.now().day &&
+                                          cellDetails.date !=
+                                              _controller.selectedDate
+                                      ? Border.all(width: 1, color: colorBlue)
+                                      : null,
                               shape: BoxShape.circle,
                             ),
                             child: Text(
@@ -64,23 +67,9 @@ class CalendarDisplay extends ConsumerWidget {
                                           : null),
                             ),
                           ),
-                          Positioned(
-                              bottom: cellDetails.bounds.height * 0.01,
-                              right: cellDetails.bounds.width * 0.1,
-                              child: Container(
-                                width: 12,
-                                height: 12,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(2),
-                                  color: colorGolden,
-                                ),
-                                child: Text(
-                                  '5', //won't be const in the future
-                                  textAlign: TextAlign.center,
-                                  style:
-                                      TextStyle(fontSize: 9, color: colorWhite),
-                                ),
-                              ))
+                          NumberOfBirdForDate(
+                            cellData: cellDetails,
+                          )
                         ],
                       ),
                     );
@@ -300,5 +289,41 @@ class BirdInfo extends StatelessWidget {
         ],
       ),
     );
+  }
+}
+
+class NumberOfBirdForDate extends StatelessWidget {
+  const NumberOfBirdForDate({Key? key, required this.cellData})
+      : super(key: key);
+  final DateRangePickerCellDetails cellData;
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder(
+        future: getBirds(cellData.date),
+        builder: (context, AsyncSnapshot<List<Bird>> snapshot) {
+          if (!snapshot.hasData) {
+            return const Center(child: CircularProgressIndicator());
+          } else {
+            if (snapshot.data!.isNotEmpty) {
+              return Positioned(
+                  bottom: cellData.bounds.height * 0.01,
+                  right: cellData.bounds.width * 0.1,
+                  child: Container(
+                      width: 12,
+                      height: 12,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(2),
+                        color: colorGolden,
+                      ),
+                      child: Text(
+                        snapshot.data!.length.toString(),
+                        textAlign: TextAlign.center,
+                        style: TextStyle(fontSize: 9, color: colorWhite),
+                      )));
+            }
+            return const SizedBox.shrink();
+          }
+        });
   }
 }
