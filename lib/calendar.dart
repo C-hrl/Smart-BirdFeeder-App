@@ -194,19 +194,19 @@ class BirdCard extends StatelessWidget {
               ),
             ),
             Expanded(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.end,
+              child: Column(
                 children: [
                   Padding(
                     //Temperature
                     padding: const EdgeInsets.all(8.0),
-                    child: Column(
+                    child: Row(
                       crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      mainAxisAlignment: MainAxisAlignment.end,
                       children: [
-                        const FaIcon(
+                        FaIcon(
                           FontAwesomeIcons.temperatureHalf,
                           color: Colors.red,
+                          size: MediaQuery.of(context).size.width * 0.03,
                         ),
                         Text("${bird.temperature} °C")
                       ],
@@ -215,13 +215,14 @@ class BirdCard extends StatelessWidget {
                   Padding(
                     //Humidity
                     padding: const EdgeInsets.all(8.0),
-                    child: Column(
+                    child: Row(
                       crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      mainAxisAlignment: MainAxisAlignment.end,
                       children: [
-                        const FaIcon(
+                        FaIcon(
                           FontAwesomeIcons.droplet,
                           color: Colors.lightBlue,
+                          size: MediaQuery.of(context).size.width * 0.03,
                         ),
                         Text("${bird.humidity} %")
                       ],
@@ -230,15 +231,22 @@ class BirdCard extends StatelessWidget {
                   Padding(
                     //Pressure
                     padding: const EdgeInsets.all(8.0),
-                    child: Column(
+                    child: Row(
                       crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      mainAxisAlignment: MainAxisAlignment.end,
                       children: [
-                        const FaIcon(
-                          FontAwesomeIcons.weightHanging,
-                          color: Colors.grey,
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: FaIcon(
+                            FontAwesomeIcons.weightHanging,
+                            color: Colors.grey,
+                            size: MediaQuery.of(context).size.width * 0.03,
+                          ),
                         ),
-                        Text("${bird.pressure} %")
+                        Text(
+                          "${bird.pressure} %",
+                          style: const TextStyle(fontSize: 12),
+                        )
                       ],
                     ),
                   ),
@@ -247,6 +255,37 @@ class BirdCard extends StatelessWidget {
             )
           ],
         ),
+      ),
+    );
+  }
+}
+
+class IconInfo extends StatelessWidget {
+  const IconInfo({Key? key, required this.data}) : super(key: key);
+  final String data;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      //Pressure
+      padding: const EdgeInsets.all(8.0),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: FaIcon(
+              FontAwesomeIcons.weightHanging,
+              color: Colors.grey,
+              size: MediaQuery.of(context).size.width * 0.03,
+            ),
+          ),
+          Text(
+            data,
+            style: const TextStyle(fontSize: 12),
+          )
+        ],
       ),
     );
   }
