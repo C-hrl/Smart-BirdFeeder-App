@@ -164,123 +164,92 @@ class BirdCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Card(
-        elevation: 0,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            Container(
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(12),
-                  color: colorGolden.withOpacity(0.4)),
-              width: MediaQuery.of(context).size.width * 0.16,
-              height: MediaQuery.of(context).size.width * 0.16,
-              child: Center(
-                child: FaIcon(
-                  FontAwesomeIcons.dove,
-                  color: randomColor(),
-                  size: MediaQuery.of(context).size.width * 0.1,
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+      child: SizedBox(
+        height: MediaQuery.of(context).size.width * 0.18,
+        child: Card(
+          color: colorGolden.withOpacity(0.1),
+          elevation: 0,
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Container(
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(12),
+                    color: colorGolden.withOpacity(0.4)),
+                width: MediaQuery.of(context).size.width * 0.16,
+                height: MediaQuery.of(context).size.width * 0.16,
+                child: Center(
+                  child: FaIcon(
+                    FontAwesomeIcons.dove,
+                    color: randomColor(),
+                    size: MediaQuery.of(context).size.width * 0.1,
+                  ),
                 ),
               ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [Text(bird.name), Text(bird.latinName)],
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [Text(bird.name), Text(bird.latinName)],
+                ),
               ),
-            ),
-            Expanded(
-              child: Column(
-                children: [
-                  Padding(
-                    //Temperature
-                    padding: const EdgeInsets.all(8.0),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        FaIcon(
-                          FontAwesomeIcons.temperatureHalf,
-                          color: Colors.red,
+              Expanded(
+                child: Column(
+                  children: [
+                    BirdInfo(
+                      data: "${bird.temperature} °C   ",
+                      icon: FaIcon(
+                        FontAwesomeIcons.temperatureHalf,
+                        color: Colors.red,
+                        size: MediaQuery.of(context).size.width * 0.03,
+                      ),
+                    ),
+                    BirdInfo(
+                      data: "${bird.humidity} %   ",
+                      icon: FaIcon(
+                        FontAwesomeIcons.droplet,
+                        color: Colors.lightBlue,
+                        size: MediaQuery.of(context).size.width * 0.03,
+                      ),
+                    ),
+                    BirdInfo(
+                        data: "${bird.pressure} kPa",
+                        icon: FaIcon(
+                          FontAwesomeIcons.weightHanging,
+                          color: Colors.grey,
                           size: MediaQuery.of(context).size.width * 0.03,
-                        ),
-                        Text("${bird.temperature} °C")
-                      ],
-                    ),
-                  ),
-                  Padding(
-                    //Humidity
-                    padding: const EdgeInsets.all(8.0),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        FaIcon(
-                          FontAwesomeIcons.droplet,
-                          color: Colors.lightBlue,
-                          size: MediaQuery.of(context).size.width * 0.03,
-                        ),
-                        Text("${bird.humidity} %")
-                      ],
-                    ),
-                  ),
-                  Padding(
-                    //Pressure
-                    padding: const EdgeInsets.all(8.0),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: FaIcon(
-                            FontAwesomeIcons.weightHanging,
-                            color: Colors.grey,
-                            size: MediaQuery.of(context).size.width * 0.03,
-                          ),
-                        ),
-                        Text(
-                          "${bird.pressure} %",
-                          style: const TextStyle(fontSize: 12),
-                        )
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            )
-          ],
+                        ))
+                  ],
+                ),
+              )
+            ],
+          ),
         ),
       ),
     );
   }
 }
 
-class IconInfo extends StatelessWidget {
-  const IconInfo({Key? key, required this.data}) : super(key: key);
+class BirdInfo extends StatelessWidget {
+  const BirdInfo({Key? key, required this.data, required this.icon})
+      : super(key: key);
   final String data;
+  final FaIcon icon;
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      //Pressure
-      padding: const EdgeInsets.all(8.0),
+      padding: EdgeInsets.symmetric(
+          horizontal: MediaQuery.of(context).size.width * 0.02),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: FaIcon(
-              FontAwesomeIcons.weightHanging,
-              color: Colors.grey,
-              size: MediaQuery.of(context).size.width * 0.03,
-            ),
-          ),
+          Padding(padding: const EdgeInsets.all(8.0), child: icon),
           Text(
             data,
             style: const TextStyle(fontSize: 12),
