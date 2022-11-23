@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:intl/intl.dart';
 import 'package:smart_bird_feeder/database/db.dart';
 import 'package:smart_bird_feeder/theme/styles.dart';
 import 'package:smart_bird_feeder/theme/theme.dart';
@@ -41,10 +42,10 @@ class CalendarDisplay extends ConsumerWidget {
                             height: cellDetails.bounds.height * 0.92,
                             alignment: Alignment.center,
                             decoration: BoxDecoration(
-                              color: _controller.selectedDate ==
-                                      cellDetails.date
-                                  ? colorBlue.withOpacity(0.6)
-                                  : /*cellDetails.date.day == DateTime.now().day ? colorBlue.withOpacity(0.5) :*/ null,
+                              color:
+                                  _controller.selectedDate == cellDetails.date
+                                      ? colorBlue.withOpacity(0.6)
+                                      : null,
                               border: cellDetails.date.day == DateTime.now().day
                                   ? Border.all(width: 1, color: colorBlue)
                                   : null,
@@ -89,14 +90,17 @@ class CalendarDisplay extends ConsumerWidget {
                       height: cellDetails.bounds.height,
                       alignment: Alignment.center,
                       decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(32),
                         color: _controller.selectedDate == cellDetails.date
                             ? colorBlue
-                            : cellDetails.date.month == DateTime.now().month
-                                ? colorBlue.withOpacity(0.5)
+                            : cellDetails.date == DateTime.now()
+                                ? colorBlue.withOpacity(0.6)
                                 : null,
-                        shape: BoxShape.circle,
+                        border: (cellDetails.date.month == DateTime.now().month)
+                            ? Border.all(width: 1, color: colorBlue)
+                            : null,
                       ),
-                      child: Text(cellDetails.date.month.toString()),
+                      child: Text(DateFormat.MMM().format(cellDetails.date)),
                     );
                   } else if (_controller.view == DateRangePickerView.decade) {
                     return Container(
@@ -104,6 +108,17 @@ class CalendarDisplay extends ConsumerWidget {
                       height: cellDetails.bounds.height,
                       alignment: Alignment.center,
                       child: Text(cellDetails.date.year.toString()),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(32),
+                        color: _controller.selectedDate == cellDetails.date
+                            ? colorBlue
+                            : cellDetails.date == DateTime.now()
+                                ? colorBlue.withOpacity(0.6)
+                                : null,
+                        border: (cellDetails.date.year == DateTime.now().year)
+                            ? Border.all(width: 1, color: colorBlue)
+                            : null,
+                      ),
                     );
                   } else {
                     final int yearValue = (cellDetails.date.year ~/ 10) * 10;
@@ -114,6 +129,17 @@ class CalendarDisplay extends ConsumerWidget {
                       child: Text(yearValue.toString() +
                           ' - ' +
                           (yearValue + 9).toString()),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(32),
+                        color: _controller.selectedDate == cellDetails.date
+                            ? colorBlue
+                            : cellDetails.date == DateTime.now()
+                                ? colorBlue.withOpacity(0.6)
+                                : null,
+                        border: (yearValue == DateTime.now().year ~/ 10 * 10)
+                            ? Border.all(width: 1, color: colorBlue)
+                            : null,
+                      ),
                     );
                   }
                 },
@@ -194,38 +220,55 @@ class BirdCard extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [Text(bird.name), Text(bird.latinName)],
-                ),
-              ),
-              Expanded(
-                child: Column(
                   children: [
-                    BirdInfo(
-                      data: "${bird.temperature} °C   ",
-                      icon: FaIcon(
-                        FontAwesomeIcons.temperatureHalf,
-                        color: Colors.red,
-                        size: MediaQuery.of(context).size.width * 0.03,
-                      ),
+                    Text(
+                      bird.name,
+                      style: text.copyWith(fontSize: 16),
                     ),
-                    BirdInfo(
-                      data: "${bird.humidity} %   ",
-                      icon: FaIcon(
-                        FontAwesomeIcons.droplet,
-                        color: Colors.lightBlue,
-                        size: MediaQuery.of(context).size.width * 0.03,
-                      ),
-                    ),
-                    BirdInfo(
-                        data: "${bird.pressure} kPa",
-                        icon: FaIcon(
-                          FontAwesomeIcons.weightHanging,
-                          color: Colors.grey,
-                          size: MediaQuery.of(context).size.width * 0.03,
-                        ))
+                    Text(
+                      bird.latinName,
+                      style: text.copyWith(
+                          fontSize: 12, fontWeight: FontWeight.normal),
+                    )
                   ],
                 ),
+              ),
+              const Spacer(),
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Text(
+                  "${bird.date.hour} : ${bird.date.minute}",
+                  style: text.copyWith(color: colorGolden),
+                ),
               )
+              //TODO remove or keep?
+              /* Column(
+                children: [
+                  BirdInfo(
+                    data: "${bird.temperature} °C   ",
+                    icon: FaIcon(
+                      FontAwesomeIcons.temperatureHalf,
+                      color: Colors.red,
+                      size: MediaQuery.of(context).size.width * 0.03,
+                    ),
+                  ),
+                  BirdInfo(
+                    data: "${bird.humidity} %   ",
+                    icon: FaIcon(
+                      FontAwesomeIcons.droplet,
+                      color: Colors.lightBlue,
+                      size: MediaQuery.of(context).size.width * 0.03,
+                    ),
+                  ),
+                  BirdInfo(
+                      data: "${bird.pressure} kPa",
+                      icon: FaIcon(
+                        FontAwesomeIcons.weightHanging,
+                        color: Colors.grey,
+                        size: MediaQuery.of(context).size.width * 0.03,
+                      ))
+                ],
+              ), */
             ],
           ),
         ),
