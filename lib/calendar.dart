@@ -43,7 +43,7 @@ class CalendarDisplay extends ConsumerWidget {
                             decoration: BoxDecoration(
                               color: _controller.selectedDate ==
                                       cellDetails.date
-                                  ? colorBlue
+                                  ? colorBlue.withOpacity(0.6)
                                   : /*cellDetails.date.day == DateTime.now().day ? colorBlue.withOpacity(0.5) :*/ null,
                               border: cellDetails.date.day == DateTime.now().day
                                   ? Border.all(width: 1, color: colorBlue)
