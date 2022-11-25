@@ -303,7 +303,7 @@ class NumberOfBirdForDate extends StatelessWidget {
         future: getBirds(cellData.date),
         builder: (context, AsyncSnapshot<List<Bird>> snapshot) {
           if (!snapshot.hasData) {
-            return const Center(child: CircularProgressIndicator());
+            return const Center(child: SizedBox.shrink());
           } else {
             if (snapshot.data!.isNotEmpty) {
               return Positioned(
