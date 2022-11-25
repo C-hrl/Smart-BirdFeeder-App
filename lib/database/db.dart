@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive/hive.dart';
 import 'package:path_provider/path_provider.dart';
 
@@ -19,6 +20,11 @@ class Bird {
 }
 
 Box<List<Bird>>? cachedDb;
+
+//must be used only after future builder did first setup
+final cachedDbProvider = StateProvider<Box<List<Bird>>>((ref) {
+  return cachedDb!;
+});
 
 Future<Box<List<Bird>>> setupDatabase() async {
   final directory = await getApplicationDocumentsDirectory();
@@ -48,8 +54,8 @@ Future<Box<List<Bird>>> getDatabase() async {
   return cachedDb == null ? await setupDatabase() : cachedDb!;
 }
 
-Future<List<Bird>> getBirds(DateTime date) async {
-  return (await getDatabase())
+List<Bird> getBirds(WidgetRef ref, DateTime date) {
+  return ref.watch(cachedDbProvider)
       .get(storeDate(date), defaultValue: List.empty())!;
 }
 

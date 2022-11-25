@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:sidebarx/sidebarx.dart';
 import 'package:smart_bird_feeder/calendar.dart';
+import 'package:smart_bird_feeder/database/db.dart';
 import 'package:smart_bird_feeder/stats.dart';
 import 'package:smart_bird_feeder/theme/styles.dart';
 import 'package:smart_bird_feeder/theme/theme.dart';
@@ -120,12 +121,17 @@ class MainScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: const [
-        //spacing to make sure the sidebar doesn't overlap over our mainscreen
-        SizedBox(width: 70),
-        Page()
-      ],
+    return FutureBuilder(
+      future: getDatabase(),
+      builder: (context, snapshot) {
+        return Row(
+          children: const [
+            //spacing to make sure the sidebar doesn't overlap over our mainscreen
+            SizedBox(width: 70),
+            Page()
+          ],
+        );
+      },
     );
   }
 }

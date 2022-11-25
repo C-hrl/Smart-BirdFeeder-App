@@ -158,18 +158,10 @@ class BirdList extends ConsumerWidget {
     final currentlySelectedDay = ref.watch(selectedDayProvider);
     return Flexible(
         fit: FlexFit.loose,
-        child: FutureBuilder(
-            future: getBirds(currentlySelectedDay),
-            builder: (context, AsyncSnapshot<List<Bird>> snapshot) {
-              if (!snapshot.hasData) {
-                return const Center(child: CircularProgressIndicator());
-              } else {
-                return Column(
-                    children: snapshot.data!
-                        .map((bird) => BirdCard(bird: bird))
-                        .toList());
-              }
-            }));
+        child: Column(
+            children: getBirds(ref, currentlySelectedDay)
+                .map((bird) => BirdCard(bird: bird))
+                .toList()));
   }
 }
 
@@ -292,38 +284,31 @@ class BirdInfo extends StatelessWidget {
   }
 }
 
-class NumberOfBirdForDate extends StatelessWidget {
+class NumberOfBirdForDate extends ConsumerWidget {
   const NumberOfBirdForDate({Key? key, required this.cellData})
       : super(key: key);
   final DateRangePickerCellDetails cellData;
 
   @override
-  Widget build(BuildContext context) {
-    return FutureBuilder(
-        future: getBirds(cellData.date),
-        builder: (context, AsyncSnapshot<List<Bird>> snapshot) {
-          if (!snapshot.hasData) {
-            return const Center(child: CircularProgressIndicator());
-          } else {
-            if (snapshot.data!.isNotEmpty) {
-              return Positioned(
-                  bottom: cellData.bounds.height * 0.01,
-                  right: cellData.bounds.width * 0.1,
-                  child: Container(
-                      width: 12,
-                      height: 12,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(2),
-                        color: colorGolden,
-                      ),
-                      child: Text(
-                        snapshot.data!.length.toString(),
-                        textAlign: TextAlign.center,
-                        style: TextStyle(fontSize: 9, color: colorWhite),
-                      )));
-            }
-            return const SizedBox.shrink();
-          }
-        });
+  Widget build(BuildContext context, WidgetRef ref) {
+    List<Bird> birds = getBirds(ref, cellData.date);
+    if (birds.isNotEmpty) {
+      return Positioned(
+          bottom: cellData.bounds.height * 0.01,
+          right: cellData.bounds.width * 0.1,
+          child: Container(
+              width: 12,
+              height: 12,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(2),
+                color: colorGolden,
+              ),
+              child: Text(
+                birds.length.toString(),
+                textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 9, color: colorWhite),
+              )));
+    }
+    return const SizedBox.shrink();
   }
 }
