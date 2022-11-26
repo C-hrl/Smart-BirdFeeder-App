@@ -8,15 +8,15 @@ import 'package:smart_bird_feeder/utils.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 
-class ChartData {
+class BirdData {
   final String name;
   final int count;
   final Color color;
 
-  ChartData(this.name, this.count, this.color);
+  BirdData(this.name, this.count, this.color);
 }
 
-List<ChartData> chardata =
+List<BirdData> chartDatabase =
     List.empty() /* [
       ChartData("Mésange", 47, randomColor()),
       ChartData("Rouge-Gorge", 32, randomColor()),
@@ -25,8 +25,8 @@ List<ChartData> chardata =
       ChartData("Moineau", 50, randomColor()),
     ]*/
     ;
-final chardataProvider = StateProvider<List<ChartData>>((ref) {
-  return chardata;
+final chardataProvider = StateProvider<List<BirdData>>((ref) {
+  return chartDatabase;
 });
 
 class Stats extends ConsumerWidget {
@@ -41,21 +41,21 @@ class Stats extends ConsumerWidget {
     return countPerName;
   }
 
-  List<ChartData> buildChart(WidgetRef ref, DateTime startDate, int offset) {
-    List<ChartData> newChartdata = List.empty(growable: true);
+  List<BirdData> buildChart(WidgetRef ref, DateTime startDate, int offset) {
+    List<BirdData> newChartDatabase = List.empty(growable: true);
     List<Bird> birdsThisDay =
         getBirds(ref, startDate.add(Duration(days: offset)));
     var birdsCount = countBirds(birdsThisDay);
     birdsCount.forEach((name, count) {
-      newChartdata
-          .add(ChartData(name, count, randomColor(seed: name.hashCode)));
+      newChartDatabase
+          .add(BirdData(name, count, randomColor(seed: name.hashCode)));
     });
-    return newChartdata;
+    return newChartDatabase;
   }
 
-  List<ChartData> buildChartFromRange(
+  List<BirdData> buildChartFromRange(
       WidgetRef ref, DateTime startDate, DateTime endDate) {
-    List<ChartData> newChartdata = List.empty(growable: true);
+    List<BirdData> newChartdata = List.empty(growable: true);
     var offset = 0;
     while (offset < endDate.difference(startDate).inDays + 1) {
       newChartdata.addAll(buildChart(ref, startDate, offset));
@@ -79,7 +79,7 @@ class Stats extends ConsumerWidget {
             viewSpacing: 10,
             selectionMode: DateRangePickerSelectionMode.extendableRange,
             onSelectionChanged: (args) {
-              List<ChartData> newChartdata = List.empty(growable: true);
+              List<BirdData> newChartdata = List.empty(growable: true);
               if (args.value is PickerDateRange) {
                 //fine
                 final rangeStartDate = args.value.startDate;
@@ -125,16 +125,15 @@ class Stats extends ConsumerWidget {
                 position: LegendPosition.bottom,
                 overflowMode: LegendItemOverflowMode.wrap),
             series: [
-              DoughnutSeries<ChartData, String>(
+              DoughnutSeries<BirdData, String>(
                 dataSource: chartdata,
-                xValueMapper: (ChartData data, _) => data.name,
-                yValueMapper: (ChartData data, _) => data.count,
-                pointColorMapper: (ChartData data, _) => data.color,
-                dataLabelMapper: (ChartData data, _) => data.name,
+                xValueMapper: (BirdData data, _) => data.name,
+                yValueMapper: (BirdData data, _) => data.count,
+                pointColorMapper: (BirdData data, _) => data.color,
+                dataLabelMapper: (BirdData data, _) => data.name,
                 radius: '115%',
                 innerRadius: '40%',
                 explode: true,
-                explodeIndex: 0,
                 enableTooltip: true,
                 dataLabelSettings: const DataLabelSettings(isVisible: true),
               )
@@ -142,7 +141,7 @@ class Stats extends ConsumerWidget {
           ),
         ),
         Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 32),
           child: Column(children: [
             Padding(
               padding: const EdgeInsets.all(16.0),
@@ -152,41 +151,41 @@ class Stats extends ConsumerWidget {
               ),
             ),
             Padding(
-              padding: const EdgeInsets.all(8.0),
+              padding: const EdgeInsets.all(16.0),
               child: Text(
                 "LatinName",
                 style: subtitleText,
               ),
             ),
             Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: const [
+                  BirdInfo(
+                      cardTitle: "Nombre Total de ${55}s",
+                      data: "${57}",
+                      icon: FontAwesomeIcons.crow),
+                  BirdInfo(
+                    cardTitle: "Température moyenne",
+                    data: "${5} °C",
+                    icon: FontAwesomeIcons.temperatureHalf,
+                  )
+                ]),
+            Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
+              children: const [
                 BirdInfo(
-                  data: "${5} °C   ",
-                  icon: FaIcon(
-                    FontAwesomeIcons.temperatureHalf,
-                    color: Colors.red.shade400,
-                    size: MediaQuery.of(context).size.width * 0.06,
-                  ),
+                  cardTitle: "Pression Moyenne",
+                  data: "${150} kPa",
+                  icon: FontAwesomeIcons.gauge,
                 ),
                 BirdInfo(
-                  data: "${80} %   ",
-                  icon: FaIcon(
-                    FontAwesomeIcons.droplet,
-                    color: Colors.lightBlue,
-                    size: MediaQuery.of(context).size.width * 0.06,
-                  ),
-                ),
-                BirdInfo(
-                    data: "${150} kPa",
-                    icon: FaIcon(
-                      FontAwesomeIcons.gauge,
-                      color: colorGoldenAccent,
-                      size: MediaQuery.of(context).size.width * 0.06,
-                    ))
+                    cardTitle: "Humidité Moyenne",
+                    data: "${80} %",
+                    icon: FontAwesomeIcons.droplet)
               ],
-            ),
+            )
           ]),
         ),
       ]),
@@ -195,21 +194,57 @@ class Stats extends ConsumerWidget {
 }
 
 class BirdInfo extends StatelessWidget {
-  const BirdInfo({Key? key, required this.data, required this.icon})
+  const BirdInfo(
+      {Key? key,
+      required this.data,
+      required this.icon,
+      required this.cardTitle})
       : super(key: key);
+  final String cardTitle;
   final String data;
-  final FaIcon icon;
+  final IconData icon;
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Padding(padding: const EdgeInsets.all(8.0), child: icon),
-        Text(
-          data,
-          style: text,
-        )
-      ],
+    return SizedBox(
+      width: MediaQuery.of(context).size.width * 0.35,
+      child: Card(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+        color: colorBlue,
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                child: Text(
+                  cardTitle,
+                  style: lightText.copyWith(fontSize: 16),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    FaIcon(
+                      icon,
+                      color: colorGolden,
+                      size: MediaQuery.of(context).size.width * 0.07,
+                    ),
+                    Text(
+                      data,
+                      style: lightText.copyWith(fontSize: 14),
+                    ),
+                  ],
+                ),
+              )
+            ],
+          ),
+        ),
+      ),
     );
   }
 }

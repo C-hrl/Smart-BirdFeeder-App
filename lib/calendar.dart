@@ -67,7 +67,7 @@ class CalendarDisplay extends ConsumerWidget {
                                           : null),
                             ),
                           ),
-                          NumberOfBirdForDate(
+                          DisplayNumberOfBirdPerDay(
                             cellData: cellDetails,
                           )
                         ],
@@ -226,8 +226,8 @@ class BirdCard extends StatelessWidget {
   }
 }
 
-class NumberOfBirdForDate extends ConsumerWidget {
-  const NumberOfBirdForDate({Key? key, required this.cellData})
+class DisplayNumberOfBirdPerDay extends ConsumerWidget {
+  const DisplayNumberOfBirdPerDay({Key? key, required this.cellData})
       : super(key: key);
   final DateRangePickerCellDetails cellData;
 
