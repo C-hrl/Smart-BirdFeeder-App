@@ -47,7 +47,8 @@ Future<Box<List<Bird>>> setupDatabase() async {
   addToKey(box, other2,
       Bird('Merle', "Nom latin d'un merle", 20, 58.0, 98.4, "path/sound.ogg", other2));
 
-  return box;
+  cachedDb = box;
+  return cachedDb!;
 }
 
 Future<Box<List<Bird>>> getDatabase() async {
