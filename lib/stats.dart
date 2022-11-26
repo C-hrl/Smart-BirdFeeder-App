@@ -168,6 +168,9 @@ class Stats extends ConsumerWidget {
                     icon: FontAwesomeIcons.temperatureHalf,
                   )
                 ]),
+            Padding(
+                padding:
+                    EdgeInsets.all(MediaQuery.of(context).size.width * 0.01)),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               crossAxisAlignment: CrossAxisAlignment.center,
@@ -215,7 +218,7 @@ class BirdInfo extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                 child: Text(
-                  cardTitle,
+                  "$cardTitle\n",
                   style: lightText.copyWith(fontSize: 16),
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
