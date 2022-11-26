@@ -7,7 +7,7 @@ Color colorHarmonization(Color inputColor) {
   return inputColor.harmonizeWith(colorHarmonize);
 }
 
-Color randomColor() {
+Color randomColor({int? seed}) {
   return colorHarmonization(
-      Colors.primaries[Random().nextInt(Colors.primaries.length)]);
+      Colors.primaries[Random(seed).nextInt(Colors.primaries.length)]);
 }
