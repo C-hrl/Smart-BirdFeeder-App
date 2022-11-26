@@ -34,5 +34,12 @@ TextStyle text =
 TextStyle accentText =
     TextStyle(color: colorWhite, fontWeight: FontWeight.w700);
 
+TextStyle lightText = text.copyWith(color: colorGolden);
+
+TextStyle subtitleText =
+    text.copyWith(fontSize: 12, fontWeight: FontWeight.normal);
+
+TextStyle titleText = text.copyWith(fontSize: 16);
+
 TextStyle calendarTitle = TextStyle(color: colorBlue, fontSize: 20);
 TextStyle calendarText = TextStyle(color: colorWhite);

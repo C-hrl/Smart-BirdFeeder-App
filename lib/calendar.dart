@@ -34,7 +34,8 @@ class CalendarDisplay extends ConsumerWidget {
                 cellBuilder: (BuildContext context,
                     DateRangePickerCellDetails cellDetails) {
                   if (_controller.view == DateRangePickerView.month) {
-                    var isToday = DateUtils.dateOnly(cellDetails.date) == DateUtils.dateOnly(DateTime.now());
+                    var isToday = DateUtils.dateOnly(cellDetails.date) ==
+                        DateUtils.dateOnly(DateTime.now());
                     return Center(
                       child: Stack(
                         children: [
@@ -47,12 +48,11 @@ class CalendarDisplay extends ConsumerWidget {
                                   _controller.selectedDate == cellDetails.date
                                       ? colorBlue.withOpacity(0.6)
                                       : null,
-                              border:
-                                  isToday &&
-                                          cellDetails.date !=
-                                              _controller.selectedDate
-                                      ? Border.all(width: 1, color: colorBlue)
-                                      : null,
+                              border: isToday &&
+                                      cellDetails.date !=
+                                          _controller.selectedDate
+                                  ? Border.all(width: 1, color: colorBlue)
+                                  : null,
                               shape: BoxShape.circle,
                             ),
                             child: Text(
@@ -204,13 +204,9 @@ class BirdCard extends StatelessWidget {
                   children: [
                     Text(
                       bird.name,
-                      style: text.copyWith(fontSize: 16),
+                      style: titleText,
                     ),
-                    Text(
-                      bird.latinName,
-                      style: text.copyWith(
-                          fontSize: 12, fontWeight: FontWeight.normal),
-                    )
+                    Text(bird.latinName, style: subtitleText)
                   ],
                 ),
               ),
@@ -222,63 +218,9 @@ class BirdCard extends StatelessWidget {
                   style: text.copyWith(color: colorGolden),
                 ),
               )
-              //TODO remove or keep?
-              /* Column(
-                children: [
-                  BirdInfo(
-                    data: "${bird.temperature} °C   ",
-                    icon: FaIcon(
-                      FontAwesomeIcons.temperatureHalf,
-                      color: Colors.red,
-                      size: MediaQuery.of(context).size.width * 0.03,
-                    ),
-                  ),
-                  BirdInfo(
-                    data: "${bird.humidity} %   ",
-                    icon: FaIcon(
-                      FontAwesomeIcons.droplet,
-                      color: Colors.lightBlue,
-                      size: MediaQuery.of(context).size.width * 0.03,
-                    ),
-                  ),
-                  BirdInfo(
-                      data: "${bird.pressure} kPa",
-                      icon: FaIcon(
-                        FontAwesomeIcons.weightHanging,
-                        color: Colors.grey,
-                        size: MediaQuery.of(context).size.width * 0.03,
-                      ))
-                ],
-              ), */
             ],
           ),
         ),
-      ),
-    );
-  }
-}
-
-class BirdInfo extends StatelessWidget {
-  const BirdInfo({Key? key, required this.data, required this.icon})
-      : super(key: key);
-  final String data;
-  final FaIcon icon;
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.symmetric(
-          horizontal: MediaQuery.of(context).size.width * 0.02),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisAlignment: MainAxisAlignment.end,
-        children: [
-          Padding(padding: const EdgeInsets.all(8.0), child: icon),
-          Text(
-            data,
-            style: const TextStyle(fontSize: 12),
-          )
-        ],
       ),
     );
   }
