@@ -143,12 +143,9 @@ class Stats extends ConsumerWidget {
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 32),
           child: Column(children: [
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Text(
-                "BirdName",
-                style: titleText,
-              ),
+            Text(
+              "BirdName",
+              style: titleText,
             ),
             Padding(
               padding: const EdgeInsets.all(16.0),
@@ -227,16 +224,18 @@ class BirdInfo extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
                     FaIcon(
                       icon,
                       color: colorGolden,
                       size: MediaQuery.of(context).size.width * 0.07,
                     ),
-                    Text(
-                      data,
-                      style: lightText.copyWith(fontSize: 14),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 16),
+                      child: Text(
+                        data,
+                        style: lightText.copyWith(fontSize: 14),
+                      ),
                     ),
                   ],
                 ),
