@@ -50,7 +50,7 @@ class Stats extends ConsumerWidget {
   List<ChartData> buildChartFromRange(WidgetRef ref, DateTime startDate, DateTime endDate) {
     List<ChartData> newChartdata = List.empty(growable: true);
     var offset = 0;
-    while(offset < endDate.difference(startDate).inDays) {
+    while(offset < endDate.difference(startDate).inDays+1) {
       newChartdata.addAll(buildChart(ref, startDate, offset));
       offset+=1;
     }

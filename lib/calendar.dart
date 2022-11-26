@@ -34,6 +34,7 @@ class CalendarDisplay extends ConsumerWidget {
                 cellBuilder: (BuildContext context,
                     DateRangePickerCellDetails cellDetails) {
                   if (_controller.view == DateRangePickerView.month) {
+                    var isToday = DateUtils.dateOnly(cellDetails.date) == DateUtils.dateOnly(DateTime.now());
                     return Center(
                       child: Stack(
                         children: [
@@ -47,7 +48,7 @@ class CalendarDisplay extends ConsumerWidget {
                                       ? colorBlue.withOpacity(0.6)
                                       : null,
                               border:
-                                  cellDetails.date.day == DateTime.now().day &&
+                                  isToday &&
                                           cellDetails.date !=
                                               _controller.selectedDate
                                       ? Border.all(width: 1, color: colorBlue)
@@ -61,8 +62,7 @@ class CalendarDisplay extends ConsumerWidget {
                                   color: cellDetails.date ==
                                           _controller.selectedDate
                                       ? Colors.white
-                                      : cellDetails.date.day ==
-                                              DateTime.now().day
+                                      : isToday
                                           ? colorBlue
                                           : null),
                             ),
@@ -191,7 +191,7 @@ class BirdCard extends StatelessWidget {
                 child: Center(
                   child: FaIcon(
                     FontAwesomeIcons.dove,
-                    color: randomColor(),
+                    color: randomColor(seed: bird.name.hashCode),
                     size: MediaQuery.of(context).size.width * 0.1,
                   ),
                 ),
