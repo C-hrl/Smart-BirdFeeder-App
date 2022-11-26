@@ -209,6 +209,7 @@ class BirdInfo extends StatelessWidget {
     return SizedBox(
       width: MediaQuery.of(context).size.width * 0.35,
       child: Card(
+        elevation: 5,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
         color: colorBlue,
         child: Padding(
