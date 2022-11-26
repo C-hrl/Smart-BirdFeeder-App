@@ -124,6 +124,9 @@ class MainScreen extends StatelessWidget {
     return FutureBuilder(
       future: getDatabase(),
       builder: (context, snapshot) {
+        if(!snapshot.hasData) {
+          return const CircularProgressIndicator();
+        }
         return Row(
           children: const [
             //spacing to make sure the sidebar doesn't overlap over our mainscreen
