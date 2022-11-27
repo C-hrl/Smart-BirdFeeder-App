@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
+import 'package:smart_bird_feeder/birdfetchpictures.dart';
 import 'package:smart_bird_feeder/database/db.dart';
 import 'package:smart_bird_feeder/theme/styles.dart';
 import 'package:smart_bird_feeder/theme/theme.dart';
@@ -168,6 +169,24 @@ class BirdList extends ConsumerWidget {
 class BirdCard extends StatelessWidget {
   const BirdCard({Key? key, required this.bird}) : super(key: key);
   final Bird bird;
+
+  Widget birdIcon(context) {
+    return Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(12),
+          color: colorGolden.withOpacity(0.4),
+        ),
+        width: MediaQuery.of(context).size.width * 0.16,
+        height: MediaQuery.of(context).size.width * 0.16,
+        child: Center(
+            child: FaIcon(
+          FontAwesomeIcons.dove,
+          color: randomColor(seed: bird.name.hashCode),
+          size: MediaQuery.of(context).size.width * 0.1,
+        )));
+  }
+
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -182,20 +201,20 @@ class BirdCard extends StatelessWidget {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              Container(
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(12),
-                    color: colorGolden.withOpacity(0.4)),
-                width: MediaQuery.of(context).size.width * 0.16,
-                height: MediaQuery.of(context).size.width * 0.16,
-                child: Center(
-                  child: FaIcon(
-                    FontAwesomeIcons.dove,
-                    color: randomColor(seed: bird.name.hashCode),
-                    size: MediaQuery.of(context).size.width * 0.1,
-                  ),
-                ),
-              ),
+                FutureBuilder(
+                    initialData: null,
+                    future: getBirdImage(bird, birdIcon(context)),
+                    builder: (context, AsyncSnapshot<Image?> snapshot) {
+                    
+                      if(!snapshot.hasData || snapshot.data == null || snapshot.connectionState != ConnectionState.done) {
+                        return birdIcon(context);
+                      } else {
+                        return snapshot.data!;
+                      }
+
+                  },)
+                  
+              ,
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Column(

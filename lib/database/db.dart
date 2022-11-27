@@ -37,15 +37,15 @@ Future<Box<List<Bird>>> setupDatabase() async {
   // fill box for testing
   var now = DateTime.now();
   await box.clear();
-  addToKey(box, now, Bird('Mésange', 'Mésangus?', 20.0, 58.0, 98.4, "path/sound.ogg", now));
-  addToKey(box, now, Bird('Rouge-Gorge', '????', 20, 58.0, 98.4, "path/sound.ogg", now));
+  addToKey(box, now, Bird('Mésange', 'Paridae', 20.0, 58.0, 98.4, "path/sound.ogg", now));
+  addToKey(box, now, Bird('Rouge-Gorge', 'Erithacus rubecula', 20, 58.0, 98.4, "path/sound.ogg", now));
   var other = now.add(const Duration(days: 3, hours: 9));
   addToKey(
-      box, other, Bird('Moineau', 'Moinneau?', 20, 58.0, 98.4, "path/sound.ogg", other));
+      box, other, Bird('Moineau', 'Passer domesticus', 20, 58.0, 98.4, "path/sound.ogg", other));
 
   var other2 = now.add(const Duration(days: 3, hours: 10));
   addToKey(box, other2,
-      Bird('Merle', "Nom latin d'un merle", 20, 58.0, 98.4, "path/sound.ogg", other2));
+      Bird('Merle', "Turdus merula", 20, 58.0, 98.4, "path/sound.ogg", other2));
 
   cachedDb = box;
   return cachedDb!;
