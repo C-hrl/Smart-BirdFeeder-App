@@ -212,7 +212,7 @@ class BirdInfo extends StatelessWidget {
       width: MediaQuery.of(context).size.width * 0.35,
       child: Card(
         elevation: 5,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         color: colorBlue,
         child: Padding(
           padding: const EdgeInsets.all(16.0),
