@@ -295,6 +295,7 @@ class _AudioPlayer extends ConsumerState<AudioPlayer>
   void initState() {
     super.initState();
     birdSongController = PlayerController();
+    preparePlayer();
   }
 
   void preparePlayer() async {
