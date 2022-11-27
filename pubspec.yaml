@@ -36,7 +36,6 @@ dependencies:
   cupertino_icons: ^1.0.2
   sidebarx: ^0.14.0
   flutter_riverpod: ^2.1.1
-  audio_waveforms: ^0.1.5+1
   syncfusion_flutter_charts: ^20.3.57
   dynamic_color: ^1.5.4
   syncfusion_flutter_datepicker: ^20.3.57

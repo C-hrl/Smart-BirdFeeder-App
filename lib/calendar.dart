@@ -1,4 +1,3 @@
-import 'package:audio_waveforms/audio_waveforms.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -209,13 +208,19 @@ class BirdCard extends StatelessWidget {
                 initialData: null,
                 future: getBirdImage(bird, birdIcon(context)),
                 builder: (context, AsyncSnapshot<Image?> snapshot) {
-                  if (!snapshot.hasData ||
+                  var notReady = !snapshot.hasData ||
                       snapshot.data == null ||
-                      snapshot.connectionState != ConnectionState.done) {
-                    return birdIcon(context);
-                  } else {
-                    return snapshot.data!;
-                  }
+                      snapshot.connectionState != ConnectionState.done;
+                  return Stack(children: [
+                    birdIcon(context),
+                    AnimatedOpacity(
+                        curve: Curves.easeOut,
+                        opacity: notReady ? 0.0 : 1.0,
+                        duration: !notReady
+                            ? const Duration(seconds: 2)
+                            : const Duration(),
+                        child: snapshot.data!)
+                  ]);
                 },
               ),
               Padding(
@@ -286,7 +291,7 @@ class AudioPlayer extends ConsumerWidget {
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
         Container(
-          color: colorBlue,
+          color: colorWhite,
           height: 140,
           child: Column(mainAxisAlignment: MainAxisAlignment.end, children: [
             Row(
@@ -294,12 +299,10 @@ class AudioPlayer extends ConsumerWidget {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 IconButton(
-                    onPressed: () {}, icon: const FaIcon(FontAwesomeIcons.play))
+                    onPressed: () {},
+                    icon: const FaIcon(FontAwesomeIcons.play)),
               ],
             ),
-            AudioFileWaveforms(
-                size: Size(MediaQuery.of(context).size.width, 70),
-                playerController: PlayerController())
           ]),
         ),
       ],
