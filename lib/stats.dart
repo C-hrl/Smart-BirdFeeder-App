@@ -131,7 +131,7 @@ class Stats extends ConsumerWidget {
                   yValueMapper: (BirdData data, _) => data.count,
                   pointColorMapper: (BirdData data, _) => data.color,
                   dataLabelMapper: (BirdData data, _) => data.name,
-                  radius: '115%',
+                  radius: '100%',
                   innerRadius: '40%',
                   explode: true,
                   enableTooltip: true,

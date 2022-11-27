@@ -12,7 +12,8 @@ class Bird {
   String soundPath;
   DateTime date;
 
-  Bird(this.name, this.latinName, this.temperature, this.humidity, this.pressure, this.soundPath, this.date);
+  Bird(this.name, this.latinName, this.temperature, this.humidity,
+      this.pressure, this.soundPath, this.date);
 
   @override
   String toString() =>
@@ -37,11 +38,19 @@ Future<Box<List<Bird>>> setupDatabase() async {
   // fill box for testing
   var now = DateTime.now();
   await box.clear();
-  addToKey(box, now, Bird('Mésange', 'Paridae', 20.0, 58.0, 98.4, "path/sound.ogg", now));
-  addToKey(box, now, Bird('Rouge-Gorge', 'Erithacus rubecula', 20, 58.0, 98.4, "path/sound.ogg", now));
+  addToKey(box, now,
+      Bird('Mésange', 'Paridae', 20.0, 58.0, 98.4, "path/sound.ogg", now));
+  addToKey(
+      box,
+      now,
+      Bird('Rouge-Gorge', 'Erithacus rubecula', 20, 58.0, 98.4,
+          "path/sound.ogg", now));
   var other = now.add(const Duration(days: 3, hours: 9));
   addToKey(
-      box, other, Bird('Moineau', 'Passer domesticus', 20, 58.0, 98.4, "path/sound.ogg", other));
+      box,
+      other,
+      Bird('Moineau', 'Passer domesticus', 20, 58.0, 98.4, "path/sound.ogg",
+          other));
 
   var other2 = now.add(const Duration(days: 3, hours: 10));
   addToKey(box, other2,
@@ -56,7 +65,8 @@ Future<Box<List<Bird>>> getDatabase() async {
 }
 
 List<Bird> getBirds(WidgetRef ref, DateTime date) {
-  return ref.watch(cachedDbProvider)
+  return ref
+      .watch(cachedDbProvider)
       .get(storeDate(date), defaultValue: List.empty())!;
 }
 
@@ -68,14 +78,17 @@ void main() async {
 
   var now = DateTime.now();
 
-  addToKey(box, now, Bird('name 1', 'latin 1', 20, 58.0, 98.4, "path/sound.ogg", now));
-  addToKey(box, now, Bird('name 2', 'latin 2', 20, 58.0, 98.4, "path/sound.ogg", now));
+  addToKey(box, now,
+      Bird('name 1', 'latin 1', 20, 58.0, 98.4, "path/sound.ogg", now));
+  addToKey(box, now,
+      Bird('name 2', 'latin 2', 20, 58.0, 98.4, "path/sound.ogg", now));
   var other = now.add(const Duration(days: 3, hours: 9));
-  addToKey(box, other, Bird('name 3', 'latin 3', 20, 58.0, 98.4, "path/sound.ogg", other));
+  addToKey(box, other,
+      Bird('name 3', 'latin 3', 20, 58.0, 98.4, "path/sound.ogg", other));
 
   var other2 = now.add(const Duration(days: 3, hours: 10));
-  addToKey(
-      box, other2, Bird('name 4', 'latin 4', 20, 58.0, 98.4, "path/sound.ogg", other2));
+  addToKey(box, other2,
+      Bird('name 4', 'latin 4', 20, 58.0, 98.4, "path/sound.ogg", other2));
 
   debugPrint(box.toMap().entries.toString());
 }
@@ -100,13 +113,14 @@ class BirdAdapter extends TypeAdapter<Bird> {
 
   @override
   Bird read(BinaryReader reader) {
-    return Bird(reader.readString(), //name
-                reader.readString(), //latin
-                reader.readDouble(), //temperature
-                reader.readDouble(), //humidity
-                reader.readDouble(), //pressure
-                reader.readString(), //soundPath
-                DateTime.parse(reader.readString())); //date
+    return Bird(
+        reader.readString(), //name
+        reader.readString(), //latin
+        reader.readDouble(), //temperature
+        reader.readDouble(), //humidity
+        reader.readDouble(), //pressure
+        reader.readString(), //soundPath
+        DateTime.parse(reader.readString())); //date
   }
 
   @override

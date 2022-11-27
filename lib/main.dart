@@ -8,8 +8,6 @@ import 'package:smart_bird_feeder/stats.dart';
 import 'package:smart_bird_feeder/theme/styles.dart';
 import 'package:smart_bird_feeder/theme/theme.dart';
 
-final extendSidebar = StateProvider(((ref) => false));
-
 void main() {
   runApp(const ProviderScope(child: SmartBirdFeederApp()));
 }

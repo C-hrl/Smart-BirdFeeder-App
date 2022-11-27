@@ -1,3 +1,4 @@
+import 'package:audio_waveforms/audio_waveforms.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -282,11 +283,29 @@ class DisplayNumberOfBirdPerDay extends ConsumerWidget {
   }
 }
 
-class AudioPlayer extends ConsumerWidget {
+final selectedBirdSongPathProvider = StateProvider<String>((ref) {
+  return "sounds/Rougegorge.mp3";
+});
+
+class AudioPlayer extends ConsumerStatefulWidget {
   const AudioPlayer({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<ConsumerStatefulWidget> createState() => _AudioPlayer();
+}
+
+class _AudioPlayer extends ConsumerState<AudioPlayer>
+    with WidgetsBindingObserver {
+  late final PlayerController birdSongController;
+  @override
+  void initState() {
+    super.initState();
+    birdSongController = PlayerController();
+    birdSongController.preparePlayer(ref.watch(selectedBirdSongPathProvider));
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
@@ -299,10 +318,15 @@ class AudioPlayer extends ConsumerWidget {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 IconButton(
-                    onPressed: () {},
+                    onPressed: () async {
+                      await birdSongController.startPlayer();
+                    },
                     icon: const FaIcon(FontAwesomeIcons.play)),
               ],
             ),
+            AudioFileWaveforms(
+                size: Size(MediaQuery.of(context).size.width * 0.6, 70),
+                playerController: birdSongController)
           ]),
         ),
       ],
