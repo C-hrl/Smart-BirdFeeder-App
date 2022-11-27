@@ -1,3 +1,4 @@
+import 'package:audio_waveforms/audio_waveforms.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -19,132 +20,136 @@ class CalendarDisplay extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     DateRangePickerController _controller = DateRangePickerController();
     return Expanded(
-      child: SingleChildScrollView(
-        scrollDirection: Axis.vertical,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: SfDateRangePicker(
-                controller: _controller,
-                onSelectionChanged: (date) {
-                  ref.watch(selectedDayProvider.notifier).state = date.value;
-                },
-                cellBuilder: (BuildContext context,
-                    DateRangePickerCellDetails cellDetails) {
-                  if (_controller.view == DateRangePickerView.month) {
-                    var isToday = DateUtils.dateOnly(cellDetails.date) ==
-                        DateUtils.dateOnly(DateTime.now());
-                    return Center(
-                      child: Stack(
-                        children: [
-                          Container(
-                            width: cellDetails.bounds.width * 0.92,
-                            height: cellDetails.bounds.height * 0.92,
-                            alignment: Alignment.center,
-                            decoration: BoxDecoration(
-                              color:
-                                  _controller.selectedDate == cellDetails.date
-                                      ? colorBlue.withOpacity(0.6)
-                                      : null,
-                              border: isToday &&
-                                      cellDetails.date !=
-                                          _controller.selectedDate
+      child: Stack(children: [
+        SingleChildScrollView(
+          scrollDirection: Axis.vertical,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: SfDateRangePicker(
+                  controller: _controller,
+                  onSelectionChanged: (date) {
+                    ref.watch(selectedDayProvider.notifier).state = date.value;
+                  },
+                  cellBuilder: (BuildContext context,
+                      DateRangePickerCellDetails cellDetails) {
+                    if (_controller.view == DateRangePickerView.month) {
+                      var isToday = DateUtils.dateOnly(cellDetails.date) ==
+                          DateUtils.dateOnly(DateTime.now());
+                      return Center(
+                        child: Stack(
+                          children: [
+                            Container(
+                              width: cellDetails.bounds.width * 0.92,
+                              height: cellDetails.bounds.height * 0.92,
+                              alignment: Alignment.center,
+                              decoration: BoxDecoration(
+                                color:
+                                    _controller.selectedDate == cellDetails.date
+                                        ? colorBlue.withOpacity(0.6)
+                                        : null,
+                                border: isToday &&
+                                        cellDetails.date !=
+                                            _controller.selectedDate
+                                    ? Border.all(width: 1, color: colorBlue)
+                                    : null,
+                                shape: BoxShape.circle,
+                              ),
+                              child: Text(
+                                cellDetails.date.day.toString(),
+                                style: TextStyle(
+                                    fontSize: 13,
+                                    color: cellDetails.date ==
+                                            _controller.selectedDate
+                                        ? Colors.white
+                                        : isToday
+                                            ? colorBlue
+                                            : null),
+                              ),
+                            ),
+                            DisplayNumberOfBirdPerDay(
+                              cellData: cellDetails,
+                            )
+                          ],
+                        ),
+                      );
+                    } else if (_controller.view == DateRangePickerView.year) {
+                      return Container(
+                        width: cellDetails.bounds.width,
+                        height: cellDetails.bounds.height,
+                        alignment: Alignment.center,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(32),
+                          color: _controller.selectedDate == cellDetails.date
+                              ? colorBlue
+                              : cellDetails.date == DateTime.now()
+                                  ? colorBlue.withOpacity(0.6)
+                                  : null,
+                          border:
+                              (cellDetails.date.month == DateTime.now().month)
                                   ? Border.all(width: 1, color: colorBlue)
                                   : null,
-                              shape: BoxShape.circle,
-                            ),
-                            child: Text(
-                              cellDetails.date.day.toString(),
-                              style: TextStyle(
-                                  fontSize: 13,
-                                  color: cellDetails.date ==
-                                          _controller.selectedDate
-                                      ? Colors.white
-                                      : isToday
-                                          ? colorBlue
-                                          : null),
-                            ),
-                          ),
-                          DisplayNumberOfBirdPerDay(
-                            cellData: cellDetails,
-                          )
-                        ],
-                      ),
-                    );
-                  } else if (_controller.view == DateRangePickerView.year) {
-                    return Container(
-                      width: cellDetails.bounds.width,
-                      height: cellDetails.bounds.height,
-                      alignment: Alignment.center,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(32),
-                        color: _controller.selectedDate == cellDetails.date
-                            ? colorBlue
-                            : cellDetails.date == DateTime.now()
-                                ? colorBlue.withOpacity(0.6)
-                                : null,
-                        border: (cellDetails.date.month == DateTime.now().month)
-                            ? Border.all(width: 1, color: colorBlue)
-                            : null,
-                      ),
-                      child: Text(DateFormat.MMM().format(cellDetails.date)),
-                    );
-                  } else if (_controller.view == DateRangePickerView.decade) {
-                    return Container(
-                      width: cellDetails.bounds.width,
-                      height: cellDetails.bounds.height,
-                      alignment: Alignment.center,
-                      child: Text(cellDetails.date.year.toString()),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(32),
-                        color: _controller.selectedDate == cellDetails.date
-                            ? colorBlue
-                            : cellDetails.date == DateTime.now()
-                                ? colorBlue.withOpacity(0.6)
-                                : null,
-                        border: (cellDetails.date.year == DateTime.now().year)
-                            ? Border.all(width: 1, color: colorBlue)
-                            : null,
-                      ),
-                    );
-                  } else {
-                    final int yearValue = (cellDetails.date.year ~/ 10) * 10;
-                    return Container(
-                      width: cellDetails.bounds.width,
-                      height: cellDetails.bounds.height,
-                      alignment: Alignment.center,
-                      child: Text(yearValue.toString() +
-                          ' - ' +
-                          (yearValue + 9).toString()),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(32),
-                        color: _controller.selectedDate == cellDetails.date
-                            ? colorBlue
-                            : cellDetails.date == DateTime.now()
-                                ? colorBlue.withOpacity(0.6)
-                                : null,
-                        border: (yearValue == DateTime.now().year ~/ 10 * 10)
-                            ? Border.all(width: 1, color: colorBlue)
-                            : null,
-                      ),
-                    );
-                  }
-                },
-                monthCellStyle: const DateRangePickerMonthCellStyle(
-                    cellDecoration: BoxDecoration(color: Colors.transparent)),
-                selectionColor: Colors.white.withOpacity(0.0),
-                todayHighlightColor: colorBlue,
-                headerStyle: DateRangePickerHeaderStyle(
-                    textAlign: TextAlign.center, textStyle: calendarTitle),
-                selectionTextStyle: calendarText,
+                        ),
+                        child: Text(DateFormat.MMM().format(cellDetails.date)),
+                      );
+                    } else if (_controller.view == DateRangePickerView.decade) {
+                      return Container(
+                        width: cellDetails.bounds.width,
+                        height: cellDetails.bounds.height,
+                        alignment: Alignment.center,
+                        child: Text(cellDetails.date.year.toString()),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(32),
+                          color: _controller.selectedDate == cellDetails.date
+                              ? colorBlue
+                              : cellDetails.date == DateTime.now()
+                                  ? colorBlue.withOpacity(0.6)
+                                  : null,
+                          border: (cellDetails.date.year == DateTime.now().year)
+                              ? Border.all(width: 1, color: colorBlue)
+                              : null,
+                        ),
+                      );
+                    } else {
+                      final int yearValue = (cellDetails.date.year ~/ 10) * 10;
+                      return Container(
+                        width: cellDetails.bounds.width,
+                        height: cellDetails.bounds.height,
+                        alignment: Alignment.center,
+                        child: Text(yearValue.toString() +
+                            ' - ' +
+                            (yearValue + 9).toString()),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(32),
+                          color: _controller.selectedDate == cellDetails.date
+                              ? colorBlue
+                              : cellDetails.date == DateTime.now()
+                                  ? colorBlue.withOpacity(0.6)
+                                  : null,
+                          border: (yearValue == DateTime.now().year ~/ 10 * 10)
+                              ? Border.all(width: 1, color: colorBlue)
+                              : null,
+                        ),
+                      );
+                    }
+                  },
+                  monthCellStyle: const DateRangePickerMonthCellStyle(
+                      cellDecoration: BoxDecoration(color: Colors.transparent)),
+                  selectionColor: Colors.white.withOpacity(0.0),
+                  todayHighlightColor: colorBlue,
+                  headerStyle: DateRangePickerHeaderStyle(
+                      textAlign: TextAlign.center, textStyle: calendarTitle),
+                  selectionTextStyle: calendarText,
+                ),
               ),
-            ),
-            const BirdList()
-          ],
+              const BirdList()
+            ],
+          ),
         ),
-      ),
+        const AudioPlayer()
+      ]),
     );
   }
 }
@@ -252,5 +257,35 @@ class DisplayNumberOfBirdPerDay extends ConsumerWidget {
               )));
     }
     return const SizedBox.shrink();
+  }
+}
+
+class AudioPlayer extends ConsumerWidget {
+  const AudioPlayer({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.end,
+      children: [
+        Container(
+          color: colorBlue,
+          height: 140,
+          child: Column(mainAxisAlignment: MainAxisAlignment.end, children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                IconButton(
+                    onPressed: () {}, icon: const FaIcon(FontAwesomeIcons.play))
+              ],
+            ),
+            AudioFileWaveforms(
+                size: Size(MediaQuery.of(context).size.width, 70),
+                playerController: PlayerController())
+          ]),
+        ),
+      ],
+    );
   }
 }

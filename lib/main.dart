@@ -124,7 +124,7 @@ class MainScreen extends StatelessWidget {
     return FutureBuilder(
       future: getDatabase(),
       builder: (context, snapshot) {
-        if(!snapshot.hasData) {
+        if (!snapshot.hasData) {
           return const CircularProgressIndicator();
         }
         return Row(
@@ -171,7 +171,7 @@ class Home extends ConsumerWidget {
     return Expanded(
         child: Center(
             child: FaIcon(
-      FontAwesomeIcons.handMiddleFinger,
+      FontAwesomeIcons.question,
       size: MediaQuery.of(context).size.width * 0.8,
       color: colorGolden,
     )));
