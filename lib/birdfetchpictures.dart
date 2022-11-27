@@ -1,4 +1,3 @@
-
 import 'dart:convert';
 import 'dart:ui';
 
@@ -9,10 +8,8 @@ import 'package:smart_bird_feeder/theme/theme.dart';
 import 'package:smart_bird_feeder/utils.dart';
 import 'dart:math';
 
-
 Map<String, String> headers = {};
 bool ok = false;
-
 
 void updateCookie(http.StreamedResponse response) {
   String? rawCookie = response.headers['set-cookie'];
@@ -125,129 +122,186 @@ Future<Image?> getBirdImage(Bird bird, Widget defaultWidget) async {
 }
 
 class ColorFilterGenerator {
+  static final identity = <double>[
+    1,
+    0,
+    0,
+    0,
+    0,
+    0,
+    1,
+    0,
+    0,
+    0,
+    0,
+    0,
+    1,
+    0,
+    0,
+    0,
+    0,
+    0,
+    1,
+    0,
+  ];
 
-    static final identity = <double>[
-          1,0,0,0,0,
-          0,1,0,0,0,
-          0,0,1,0,0,
-          0,0,0,1,0,
-        ];
-
-    static Widget imageFilter({brightness, saturation, hue, contrast, child}) {
-      return ColorFiltered(
-        colorFilter: ColorFilter.matrix(
-          ColorFilterGenerator.brightnessAdjustMatrix(
-            value: brightness,
-          )
-        ),
+  static Widget imageFilter({brightness, saturation, hue, contrast, child}) {
+    return ColorFiltered(
+        colorFilter:
+            ColorFilter.matrix(ColorFilterGenerator.brightnessAdjustMatrix(
+          value: brightness,
+        )),
         child: ColorFiltered(
-          colorFilter: ColorFilter.matrix(
-            ColorFilterGenerator.saturationAdjustMatrix(
+            colorFilter:
+                ColorFilter.matrix(ColorFilterGenerator.saturationAdjustMatrix(
               value: saturation,
-            )
-          ),
-          child: ColorFiltered(
-            colorFilter: ColorFilter.matrix(
-              ColorFilterGenerator.hueAdjustMatrix(
-                value: hue,
-              )
-            ),
+            )),
             child: ColorFiltered(
-              colorFilter: ColorFilter.matrix(
-                ColorFilterGenerator.contrastAdjustMatrix(
-                  value: contrast,
-                )
-              ),
-              child: child,
-            )
-          )
-        )
-      );
+                colorFilter:
+                    ColorFilter.matrix(ColorFilterGenerator.hueAdjustMatrix(
+                  value: hue,
+                )),
+                child: ColorFiltered(
+                  colorFilter: ColorFilter.matrix(
+                      ColorFilterGenerator.contrastAdjustMatrix(
+                    value: contrast,
+                  )),
+                  child: child,
+                ))));
+  }
+
+  static List<double> hueAdjustMatrix({double value = 0.0}) {
+    value = value * pi;
+
+    if (value == 0) {
+      return ColorFilterGenerator.identity;
     }
 
-    static List<double> hueAdjustMatrix({double value = 0.0}) {
-      value = value * pi;
+    double cosVal = cos(value);
+    double sinVal = sin(value);
+    double lumR = 0.213;
+    double lumG = 0.715;
+    double lumB = 0.072;
 
-      if (value == 0) {
-        return ColorFilterGenerator.identity;
-      }
+    return <double>[
+      (lumR + (cosVal * (1 - lumR))) + (sinVal * (-lumR)),
+      (lumG + (cosVal * (-lumG))) + (sinVal * (-lumG)),
+      (lumB + (cosVal * (-lumB))) + (sinVal * (1 - lumB)),
+      0,
+      0,
+      (lumR + (cosVal * (-lumR))) + (sinVal * 0.143),
+      (lumG + (cosVal * (1 - lumG))) + (sinVal * 0.14),
+      (lumB + (cosVal * (-lumB))) + (sinVal * (-0.283)),
+      0,
+      0,
+      (lumR + (cosVal * (-lumR))) + (sinVal * (-(1 - lumR))),
+      (lumG + (cosVal * (-lumG))) + (sinVal * lumG),
+      (lumB + (cosVal * (1 - lumB))) + (sinVal * lumB),
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+    ];
+  }
 
-      double cosVal = cos(value);
-      double sinVal = sin(value);
-      double lumR = 0.213;
-      double lumG = 0.715;
-      double lumB = 0.072;
-
-      return <double>[
-        (lumR + (cosVal * (1 - lumR))) + (sinVal * (-lumR)), (lumG + (cosVal * (-lumG))) + (sinVal * (-lumG)), (lumB + (cosVal * (-lumB))) + (sinVal * (1 - lumB)), 0, 0, (lumR + (cosVal * (-lumR))) + (sinVal * 0.143), (lumG + (cosVal * (1 - lumG))) + (sinVal * 0.14), (lumB + (cosVal * (-lumB))) + (sinVal * (-0.283)), 0, 0, (lumR + (cosVal * (-lumR))) + (sinVal * (-(1 - lumR))), (lumG + (cosVal * (-lumG))) + (sinVal * lumG), (lumB + (cosVal * (1 - lumB))) + (sinVal * lumB), 0, 0, 0, 0, 0, 1, 0,
-      ];
-    }
-
-    static List<double> brightnessAdjustMatrix({double value = 0.0}) {
-      if (value <= 0) {
-        value = value * 255;
-      } else {
-        value = value * 100;
-      }
-
-      if (value == 0) {
-        return ColorFilterGenerator.identity;
-      }
-
-      return <double>[
-        1, 0, 0, 0, value, 0, 1, 0, 0, value, 0, 0, 1, 0, value, 0, 0, 0, 1, 0
-      ];
-    }
-
-    static List<double> contrastAdjustMatrix({double value = 0.0}) {
-        double t = (1.0 - (1 + value)) / 2.0 * 255;
-        return <double>[
-          1 + value,
-          0,
-          0,
-          0,
-          t,
-          0,
-          1 + value,
-          0,
-          0,
-          t,
-          0,
-          0,
-          1 + value,
-          0,
-          t,
-          0,
-          0,
-          0,
-          1,
-          0,
-        ];
-    }
-
-    static List<double> saturationAdjustMatrix({double value = 0.0}) {
+  static List<double> brightnessAdjustMatrix({double value = 0.0}) {
+    if (value <= 0) {
+      value = value * 255;
+    } else {
       value = value * 100;
-
-      if (value == 0) {
-        return ColorFilterGenerator.identity;
-      }
-
-      double x = ((1 + ((value > 0) ? ((3 * value) / 100) : (value / 100)))).toDouble();
-      double lumR = 0.3086;
-      double lumG = 0.6094;
-      double lumB = 0.082;
-
-      return <double>[
-        (lumR * (1 - x)) + x, lumG * (1 - x), lumB * (1 - x),
-        0, 0,
-        lumR * (1 - x),
-        (lumG * (1 - x)) + x,
-        lumB * (1 - x),
-        0, 0,
-        lumR * (1 - x),
-        lumG * (1 - x),
-        (lumB * (1 - x)) + x,
-        0, 0, 0, 0, 0, 1, 0,
-      ];
     }
+
+    if (value == 0) {
+      return ColorFilterGenerator.identity;
+    }
+
+    return <double>[
+      1,
+      0,
+      0,
+      0,
+      value,
+      0,
+      1,
+      0,
+      0,
+      value,
+      0,
+      0,
+      1,
+      0,
+      value,
+      0,
+      0,
+      0,
+      1,
+      0
+    ];
+  }
+
+  static List<double> contrastAdjustMatrix({double value = 0.0}) {
+    double t = (1.0 - (1 + value)) / 2.0 * 255;
+    return <double>[
+      1 + value,
+      0,
+      0,
+      0,
+      t,
+      0,
+      1 + value,
+      0,
+      0,
+      t,
+      0,
+      0,
+      1 + value,
+      0,
+      t,
+      0,
+      0,
+      0,
+      1,
+      0,
+    ];
+  }
+
+  static List<double> saturationAdjustMatrix({double value = 0.0}) {
+    value = value * 100;
+
+    if (value == 0) {
+      return ColorFilterGenerator.identity;
+    }
+
+    double x =
+        ((1 + ((value > 0) ? ((3 * value) / 100) : (value / 100)))).toDouble();
+    double lumR = 0.3086;
+    double lumG = 0.6094;
+    double lumB = 0.082;
+
+    return <double>[
+      (lumR * (1 - x)) + x,
+      lumG * (1 - x),
+      lumB * (1 - x),
+      0,
+      0,
+      lumR * (1 - x),
+      (lumG * (1 - x)) + x,
+      lumB * (1 - x),
+      0,
+      0,
+      lumR * (1 - x),
+      lumG * (1 - x),
+      (lumB * (1 - x)) + x,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+    ];
+  }
 }
