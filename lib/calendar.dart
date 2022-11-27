@@ -145,7 +145,8 @@ class CalendarDisplay extends ConsumerWidget {
                   selectionTextStyle: calendarText,
                 ),
               ),
-              const BirdList()
+              const BirdList(),
+              const SizedBox(height: 140,)
             ],
           ),
         ),
@@ -209,13 +210,19 @@ class BirdCard extends StatelessWidget {
                 initialData: null,
                 future: getBirdImage(bird, birdIcon(context)),
                 builder: (context, AsyncSnapshot<Image?> snapshot) {
-                  if (!snapshot.hasData ||
+                  var notReady = !snapshot.hasData ||
                       snapshot.data == null ||
-                      snapshot.connectionState != ConnectionState.done) {
-                    return birdIcon(context);
-                  } else {
-                    return snapshot.data!;
-                  }
+                      snapshot.connectionState != ConnectionState.done;
+                  return Stack(children: [
+                    birdIcon(context),
+                    AnimatedOpacity(
+                        curve: Curves.easeOut,
+                        opacity: notReady ? 0.0 : 1.0,
+                        duration: !notReady
+                            ? const Duration(seconds: 1)
+                            : const Duration(),
+                        child: snapshot.data)
+                  ]);
                 },
               ),
               Padding(

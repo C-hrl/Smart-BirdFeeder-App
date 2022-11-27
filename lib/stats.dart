@@ -10,63 +10,72 @@ import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 
 class BirdData {
   final String name;
+  final String latinName;
   final int count;
   final Color color;
+  final double meanTemperature;
+  final double meanHumidity;
+  final double meanPressure;
 
-  BirdData(this.name, this.count, this.color);
+  BirdData(this.name, this.latinName, this.count, this.color, this.meanTemperature, this.meanHumidity, this.meanPressure);
 }
 
-List<BirdData> chartDatabase =
-    List.empty() /* [
-      ChartData("Mésange", 47, randomColor()),
-      ChartData("Rouge-Gorge", 32, randomColor()),
-      ChartData("Pie", 12, randomColor()),
-      ChartData("Jay", 24, randomColor()),
-      ChartData("Moineau", 50, randomColor()),
-    ]*/
-    ;
+List<BirdData> chartDatabase = List.empty();
+
 final chardataProvider = StateProvider<List<BirdData>>((ref) {
   return chartDatabase;
+});
+
+final chartIndexProvider = StateProvider<int>((ref) {
+  return -1;
 });
 
 class Stats extends ConsumerWidget {
   const Stats({Key? key}) : super(key: key);
 
-  Map<String, int> countBirds(List<Bird> birds) {
-    Map<String, int> countPerName = {};
+  Map<String,BirdData> mapDataPerName(List<Bird> birds) {
+    Map<String, List<num>> dataPerName = {};
+    Map<String, String> latinPerName = {};
     for (var bird in birds) {
-      countPerName.putIfAbsent(bird.name, () => 0);
-      countPerName[bird.name] = countPerName[bird.name]! + 1;
+      //setup
+      dataPerName.putIfAbsent(bird.name, () => [0,0.0,0.0,0.0]);
+      latinPerName.putIfAbsent(bird.name, () => bird.latinName);
+
+      //increment
+      dataPerName[bird.name]![0] += 1; //count
+      dataPerName[bird.name]![1] += bird.temperature; //temperature
+      dataPerName[bird.name]![2] += bird.humidity; //humidity
+      dataPerName[bird.name]![3] += bird.pressure; //pressure
     }
-    return countPerName;
+    return dataPerName.map((name, data) {
+      int count = data[0] as int;
+      return MapEntry(name,BirdData(name, latinPerName[name]!, count, harmonizedRandomColor(seed: name.hashCode), data[1]/count, data[2]/count, data[3]/count)); //mean calculation
+    });
   }
 
-  List<BirdData> buildChart(WidgetRef ref, DateTime startDate, int offset) {
-    List<BirdData> newChartDatabase = List.empty(growable: true);
+  Map<String,BirdData> buildChart(WidgetRef ref, DateTime startDate, int offset) {
     List<Bird> birdsThisDay =
         getBirds(ref, startDate.add(Duration(days: offset)));
-    var birdsCount = countBirds(birdsThisDay);
-    birdsCount.forEach((name, count) {
-      newChartDatabase.add(
-          BirdData(name, count, harmonizedRandomColor(seed: name.hashCode)));
-    });
-    return newChartDatabase;
+    return mapDataPerName(birdsThisDay);
   }
 
-  List<BirdData> buildChartFromRange(
+  Map<String,BirdData> buildChartFromRange(
       WidgetRef ref, DateTime startDate, DateTime endDate) {
-    List<BirdData> newChartdata = List.empty(growable: true);
+    List<Bird> birdsThisRange = List.empty(growable: true);
     var offset = 0;
     while (offset < endDate.difference(startDate).inDays + 1) {
-      newChartdata.addAll(buildChart(ref, startDate, offset));
+      birdsThisRange.addAll(getBirds(ref, startDate.add(Duration(days: offset))));
       offset += 1;
     }
-    return newChartdata;
+
+    return mapDataPerName(birdsThisRange);
   }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final chartdata = ref.watch(chardataProvider);
+    final selectedIndex =  ref.watch(chartIndexProvider);
+    final currentSelectedChart = chartdata.isNotEmpty && selectedIndex >= 0 ? chartdata[selectedIndex] : null; //null if nothing selected or no data
     return Expanded(
         child: SingleChildScrollView(
       child: Column(children: [
@@ -79,7 +88,7 @@ class Stats extends ConsumerWidget {
             viewSpacing: 10,
             selectionMode: DateRangePickerSelectionMode.range,
             onSelectionChanged: (args) {
-              List<BirdData> newChartdata = List.empty(growable: true);
+              Map<String,BirdData> newChartdata = {};
               if (args.value is PickerDateRange) {
                 //fine
                 final rangeStartDate = args.value.startDate;
@@ -109,14 +118,13 @@ class Stats extends ConsumerWidget {
                   }
                 }
               }
-              ref.watch(chardataProvider.notifier).state = newChartdata;
+              ref.watch(chardataProvider.notifier).state = newChartdata.values.toList();
             },
           ),
         ),
         Padding(
           padding: const EdgeInsets.all(8.0),
           child: SfCircularChart(
-            onSelectionChanged: (selectionArgs) {},
             legend: Legend(
                 isVisible: true,
                 iconWidth: 12,
@@ -126,6 +134,15 @@ class Stats extends ConsumerWidget {
                 overflowMode: LegendItemOverflowMode.wrap),
             series: [
               DoughnutSeries<BirdData, String>(
+                
+                onPointTap: (pointInteractionDetails) {
+                  var tapIndex = pointInteractionDetails.pointIndex;
+                  if(tapIndex!=null && tapIndex!=selectedIndex) {
+                    ref.watch(chartIndexProvider.notifier).state = tapIndex;
+                  } else if(tapIndex==selectedIndex) {
+                    ref.watch(chartIndexProvider.notifier).state = -1; //no selection
+                  }
+                },
                   dataSource: chartdata,
                   xValueMapper: (BirdData data, _) => data.name,
                   yValueMapper: (BirdData data, _) => data.count,
@@ -135,6 +152,7 @@ class Stats extends ConsumerWidget {
                   innerRadius: '40%',
                   explode: true,
                   enableTooltip: true,
+                  explodeIndex: selectedIndex,
                   dataLabelSettings: DataLabelSettings(
                       isVisible: true,
                       color: colorBlue,
@@ -142,31 +160,32 @@ class Stats extends ConsumerWidget {
             ],
           ),
         ),
+        if(currentSelectedChart != null) ...[
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 32),
           child: Column(children: [
             Text(
-              "BirdName",
+              currentSelectedChart.name,
               style: titleText,
             ),
             Padding(
               padding: const EdgeInsets.all(16.0),
               child: Text(
-                "LatinName",
+                currentSelectedChart.latinName,
                 style: subtitleText,
               ),
             ),
             Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 crossAxisAlignment: CrossAxisAlignment.center,
-                children: const [
+                children: [
                   BirdInfo(
-                      cardTitle: "Nombre Total de ${55}s",
-                      data: "${57}",
+                      cardTitle: "Nombre Total de ${currentSelectedChart.name}s",
+                      data: "${currentSelectedChart.count}",
                       icon: FontAwesomeIcons.crow),
                   BirdInfo(
                     cardTitle: "Température moyenne",
-                    data: "${5} °C",
+                    data: "${currentSelectedChart.meanTemperature} °C",
                     icon: FontAwesomeIcons.temperatureHalf,
                   )
                 ]),
@@ -176,20 +195,20 @@ class Stats extends ConsumerWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               crossAxisAlignment: CrossAxisAlignment.center,
-              children: const [
+              children: [
                 BirdInfo(
                   cardTitle: "Pression Moyenne",
-                  data: "${150} kPa",
+                  data: "${currentSelectedChart.meanPressure} kPa",
                   icon: FontAwesomeIcons.gauge,
                 ),
                 BirdInfo(
                     cardTitle: "Humidité Moyenne",
-                    data: "${80} %",
+                    data: "${currentSelectedChart.meanHumidity} %",
                     icon: FontAwesomeIcons.droplet)
               ],
             )
           ]),
-        ),
+        )],
       ]),
     ));
   }
