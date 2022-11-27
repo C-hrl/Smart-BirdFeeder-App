@@ -77,7 +77,7 @@ class Stats extends ConsumerWidget {
                 textAlign: TextAlign.center, textStyle: calendarTitle),
             view: DateRangePickerView.month,
             viewSpacing: 10,
-            selectionMode: DateRangePickerSelectionMode.extendableRange,
+            selectionMode: DateRangePickerSelectionMode.range,
             onSelectionChanged: (args) {
               List<BirdData> newChartdata = List.empty(growable: true);
               if (args.value is PickerDateRange) {
@@ -119,7 +119,7 @@ class Stats extends ConsumerWidget {
             onSelectionChanged: (selectionArgs) {},
             legend: Legend(
                 isVisible: true,
-                iconWidth: 10,
+                iconWidth: 12,
                 textStyle: subtitleText,
                 orientation: LegendItemOrientation.vertical,
                 position: LegendPosition.bottom,
