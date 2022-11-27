@@ -91,7 +91,7 @@ Future<Image?> getBirdImage(Bird bird, Widget defaultWidget) async {
                                   colors: [
                                     Colors.white.withOpacity(0.5),
                                     Color.alphaBlend(
-                                            randomColor(
+                                            harmonizedRandomColor(
                                                     seed: bird.name.hashCode)
                                                 .withOpacity(0.18),
                                             colorGolden)
