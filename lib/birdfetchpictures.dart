@@ -1,11 +1,7 @@
 import 'dart:convert';
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:smart_bird_feeder/database/db.dart';
-import 'package:smart_bird_feeder/theme/theme.dart';
-import 'package:smart_bird_feeder/utils.dart';
 import 'dart:math';
 
 Map<String, String> headers = {};
@@ -63,55 +59,24 @@ Future<Image?> getBirdImage(Bird bird, Widget defaultWidget) async {
                   }
                   var size = MediaQuery.of(context).size.width;
                   return ClipRRect(
-                      borderRadius: BorderRadius.circular(size * 0.016),
                       child: Stack(alignment: Alignment.center, children: [
-                        SizedBox(
-                            width: size * 0.16,
-                            height: size * 0.16,
+                    SizedBox(
+                      width: size * 0.16,
+                      height: size * 0.16,
+                      child: ClipRRect(
+                        child: ColorFilterGenerator.imageFilter(
+                            // to adjust image colors
+                            saturation: 0.3,
+                            brightness: 0.25,
+                            hue: 0.1,
+                            contrast: 0.4,
                             child: child),
-                        BackdropFilter(
-                          filter: ImageFilter.blur(
-                            sigmaX: 4.0,
-                            sigmaY: 4.0,
-                          ),
-                          child: Container(
-                            width: size * 0.16,
-                            height: size * 0.16,
-                            decoration: BoxDecoration(
-                              gradient: LinearGradient(
-                                  begin: Alignment.topLeft,
-                                  end: Alignment.bottomRight,
-                                  stops: const [
-                                    0.0,
-                                    0.4
-                                  ],
-                                  colors: [
-                                    Colors.white.withOpacity(0.5),
-                                    Color.alphaBlend(
-                                            harmonizedRandomColor(
-                                                    seed: bird.name.hashCode)
-                                                .withOpacity(0.18),
-                                            colorGolden)
-                                        .withOpacity(0.4)
-                                  ]), // to adjust blured border
-                            ),
-                          ),
-                        ),
-                        SizedBox(
-                          width: size * 0.14,
-                          height: size * 0.14,
-                          child: ClipRRect(
-                            child: ColorFilterGenerator.imageFilter(
-                                // to adjust image colors
-                                saturation: 0.3,
-                                brightness: 0.25,
-                                hue: 0.1,
-                                contrast: 0.4,
-                                child: child),
-                            borderRadius: BorderRadius.circular(size * 0.014),
-                          ),
-                        ),
-                      ]));
+                        borderRadius: const BorderRadius.only(
+                            topLeft: Radius.circular(12),
+                            bottomLeft: Radius.circular(12)),
+                      ),
+                    ),
+                  ]));
                 });
           }
         }

@@ -191,7 +191,6 @@ class BirdCard extends StatelessWidget {
         )));
   }
 
-
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -199,27 +198,26 @@ class BirdCard extends StatelessWidget {
       child: SizedBox(
         height: MediaQuery.of(context).size.width * 0.18,
         child: Card(
-          color: colorGolden.withOpacity(0.1),
+          color: colorGolden.withOpacity(0.2),
           elevation: 0,
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-                FutureBuilder(
-                    initialData: null,
-                    future: getBirdImage(bird, birdIcon(context)),
-                    builder: (context, AsyncSnapshot<Image?> snapshot) {
-                    
-                      if(!snapshot.hasData || snapshot.data == null || snapshot.connectionState != ConnectionState.done) {
-                        return birdIcon(context);
-                      } else {
-                        return snapshot.data!;
-                      }
-
-                  },)
-                  
-              ,
+              FutureBuilder(
+                initialData: null,
+                future: getBirdImage(bird, birdIcon(context)),
+                builder: (context, AsyncSnapshot<Image?> snapshot) {
+                  if (!snapshot.hasData ||
+                      snapshot.data == null ||
+                      snapshot.connectionState != ConnectionState.done) {
+                    return birdIcon(context);
+                  } else {
+                    return snapshot.data!;
+                  }
+                },
+              ),
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Column(
