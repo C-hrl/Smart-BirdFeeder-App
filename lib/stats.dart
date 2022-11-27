@@ -47,8 +47,8 @@ class Stats extends ConsumerWidget {
         getBirds(ref, startDate.add(Duration(days: offset)));
     var birdsCount = countBirds(birdsThisDay);
     birdsCount.forEach((name, count) {
-      newChartDatabase
-          .add(BirdData(name, count, randomColor(seed: name.hashCode)));
+      newChartDatabase.add(
+          BirdData(name, count, harmonizedRandomColor(seed: name.hashCode)));
     });
     return newChartDatabase;
   }

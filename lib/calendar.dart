@@ -191,7 +191,7 @@ class BirdCard extends StatelessWidget {
                 child: Center(
                   child: FaIcon(
                     FontAwesomeIcons.dove,
-                    color: randomColor(seed: bird.name.hashCode),
+                    color: harmonizedRandomColor(seed: bird.name.hashCode),
                     size: MediaQuery.of(context).size.width * 0.1,
                   ),
                 ),
