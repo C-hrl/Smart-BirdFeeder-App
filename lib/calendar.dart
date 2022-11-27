@@ -209,19 +209,13 @@ class BirdCard extends StatelessWidget {
                 initialData: null,
                 future: getBirdImage(bird, birdIcon(context)),
                 builder: (context, AsyncSnapshot<Image?> snapshot) {
-                  var notReady = !snapshot.hasData ||
+                  if (!snapshot.hasData ||
                       snapshot.data == null ||
-                      snapshot.connectionState != ConnectionState.done;
-                  return Stack(children: [
-                    birdIcon(context),
-                    AnimatedOpacity(
-                        curve: Curves.easeOut,
-                        opacity: notReady ? 0.0 : 1.0,
-                        duration: !notReady
-                            ? const Duration(seconds: 2)
-                            : const Duration(),
-                        child: snapshot.data!)
-                  ]);
+                      snapshot.connectionState != ConnectionState.done) {
+                    return birdIcon(context);
+                  } else {
+                    return snapshot.data!;
+                  }
                 },
               ),
               Padding(
@@ -301,6 +295,9 @@ class _AudioPlayer extends ConsumerState<AudioPlayer>
   void initState() {
     super.initState();
     birdSongController = PlayerController();
+  }
+
+  void preparePlayer() async {
     birdSongController.preparePlayer(ref.watch(selectedBirdSongPathProvider));
   }
 
