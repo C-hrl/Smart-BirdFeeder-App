@@ -126,17 +126,19 @@ class Stats extends ConsumerWidget {
                 overflowMode: LegendItemOverflowMode.wrap),
             series: [
               DoughnutSeries<BirdData, String>(
-                dataSource: chartdata,
-                xValueMapper: (BirdData data, _) => data.name,
-                yValueMapper: (BirdData data, _) => data.count,
-                pointColorMapper: (BirdData data, _) => data.color,
-                dataLabelMapper: (BirdData data, _) => data.name,
-                radius: '115%',
-                innerRadius: '40%',
-                explode: true,
-                enableTooltip: true,
-                dataLabelSettings: const DataLabelSettings(isVisible: true),
-              )
+                  dataSource: chartdata,
+                  xValueMapper: (BirdData data, _) => data.name,
+                  yValueMapper: (BirdData data, _) => data.count,
+                  pointColorMapper: (BirdData data, _) => data.color,
+                  dataLabelMapper: (BirdData data, _) => data.name,
+                  radius: '115%',
+                  innerRadius: '40%',
+                  explode: true,
+                  enableTooltip: true,
+                  dataLabelSettings: DataLabelSettings(
+                      isVisible: true,
+                      color: colorBlue,
+                      labelPosition: ChartDataLabelPosition.outside))
             ],
           ),
         ),

@@ -185,7 +185,7 @@ class BirdCard extends StatelessWidget {
               Container(
                 decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(12),
-                    color: colorGolden.withOpacity(0.4)),
+                    color: colorGolden.withOpacity(0.95)),
                 width: MediaQuery.of(context).size.width * 0.16,
                 height: MediaQuery.of(context).size.width * 0.16,
                 child: Center(
