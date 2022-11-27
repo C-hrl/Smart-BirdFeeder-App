@@ -58,25 +58,22 @@ Future<Image?> getBirdImage(Bird bird, Widget defaultWidget) async {
                     return defaultWidget;
                   }
                   var size = MediaQuery.of(context).size.width;
-                  return ClipRRect(
-                      child: Stack(alignment: Alignment.center, children: [
-                    SizedBox(
-                      width: size * 0.16,
-                      height: size * 0.16,
-                      child: ClipRRect(
-                        child: ColorFilterGenerator.imageFilter(
-                            // to adjust image colors
-                            saturation: 0.3,
-                            brightness: 0.25,
-                            hue: 0.1,
-                            contrast: 0.4,
-                            child: child),
-                        borderRadius: const BorderRadius.only(
-                            topLeft: Radius.circular(12),
-                            bottomLeft: Radius.circular(12)),
-                      ),
+                  return SizedBox(
+                    width: size * 0.16,
+                    height: size * 0.16,
+                    child: ClipRRect(
+                      child: ColorFilterGenerator.imageFilter(
+                          // to adjust image colors
+                          saturation: 0.3,
+                          brightness: 0.25,
+                          hue: 0.1,
+                          contrast: 0.4,
+                          child: child),
+                      borderRadius: const BorderRadius.only(
+                          topLeft: Radius.circular(12),
+                          bottomLeft: Radius.circular(12)),
                     ),
-                  ]));
+                  );
                 });
           }
         }
