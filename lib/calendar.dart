@@ -146,7 +146,9 @@ class CalendarDisplay extends ConsumerWidget {
                 ),
               ),
               const BirdList(),
-              const SizedBox(height: 140,)
+              const SizedBox(
+                height: 140,
+              )
             ],
           ),
         ),
@@ -166,14 +168,13 @@ class BirdList extends ConsumerWidget {
     return Flexible(
         fit: FlexFit.loose,
         child: Column(
-            children: getBirds(ref, currentlySelectedDay)
-                .map((bird) { 
-                  return GestureDetector(
-                    onTap: () => ref.watch(selectedBirdSongPathProvider.notifier).state = bird.soundPath,
-                    child: BirdCard(bird: bird)
-                  );  
-                })
-                .toList()));
+            children: getBirds(ref, currentlySelectedDay).map((bird) {
+          return GestureDetector(
+              onTap: () => ref
+                  .watch(selectedBirdSongPathProvider.notifier)
+                  .state = bird.soundPath,
+              child: BirdCard(bird: bird));
+        }).toList()));
   }
 }
 
@@ -300,12 +301,13 @@ class AudioPlayer extends ConsumerStatefulWidget {
   ConsumerState<ConsumerStatefulWidget> createState() => _AudioPlayer();
 }
 
-class _AudioPlayer extends ConsumerState<AudioPlayer> with WidgetsBindingObserver {
+class _AudioPlayer extends ConsumerState<AudioPlayer>
+    with WidgetsBindingObserver {
   late final PlayerController birdSongController;
   @override
   void initState() {
     super.initState();
-    birdSongController = PlayerController(); 
+    birdSongController = PlayerController();
   }
 
   @override
@@ -324,8 +326,9 @@ class _AudioPlayer extends ConsumerState<AudioPlayer> with WidgetsBindingObserve
 
   Future<void> preparePlayer() async {
     String path = ref.watch(selectedBirdSongPathProvider);
-    if(path.isEmpty) {
-      birdSongController.setPlayerState(PlayerState.stopped); //stopped if no sound selected
+    if (path.isEmpty) {
+      birdSongController
+          .setPlayerState(PlayerState.stopped); //stopped if no sound selected
     } else {
       await birdSongController.preparePlayer(path);
     }
@@ -334,37 +337,49 @@ class _AudioPlayer extends ConsumerState<AudioPlayer> with WidgetsBindingObserve
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-      future: preparePlayer(), //in future builder because ref.watch during initstate causes issues
+      future:
+          preparePlayer(), //in future builder because ref.watch during initstate causes issues
       builder: (context, snapshot) {
-          return Column(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              Container(
-                color: colorWhite,
-                height: 140,
-                child: Column(mainAxisAlignment: MainAxisAlignment.end, children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      if (birdSongController.playerState != PlayerState.stopped) ...[
+        return Column(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            Container(
+              color: colorWhite,
+              height: 140,
+              child:
+                  Column(mainAxisAlignment: MainAxisAlignment.end, children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    if (birdSongController.playerState !=
+                        PlayerState.stopped) ...[
                       IconButton(
                           onPressed: () async {
                             await birdSongController.startPlayer();
                           },
                           icon: const FaIcon(FontAwesomeIcons.play)),
-                      ]
-                    ],
+                    ]
+                  ],
+                ),
+                SafeArea(
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: AudioFileWaveforms(
+                      size: Size(MediaQuery.of(context).size.width * 0.6, 60),
+                      playerController: birdSongController,
+                      playerWaveStyle: const PlayerWaveStyle(),
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(12),
+                          color: colorBlue),
+                    ),
                   ),
-                  SafeArea(child: 
-                  AudioFileWaveforms(
-                      size: Size(MediaQuery.of(context).size.width * 0.6, 70),
-                      playerController: birdSongController))
-                ]),
-              ),
-            ],
+                )
+              ]),
+            ),
+          ],
         );
-    },);
-    
+      },
+    );
   }
 }
