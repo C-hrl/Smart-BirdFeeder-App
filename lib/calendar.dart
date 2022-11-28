@@ -359,7 +359,7 @@ class _AudioPlayer extends ConsumerState<AudioPlayer>
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-
+                 
                       IconButton(
                           onPressed: () async {
                             await birdSongController.startPlayer();
@@ -368,7 +368,7 @@ class _AudioPlayer extends ConsumerState<AudioPlayer>
                     
                   ],
                 ),
-
+                if (birdSongController.playerState != PlayerState.stopped) ...[
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: AudioFileWaveforms(
@@ -380,7 +380,7 @@ class _AudioPlayer extends ConsumerState<AudioPlayer>
                           color: colorBlue),
                     ),
                   ),
-                
+                ]
               ]),
             ))),
           ],
