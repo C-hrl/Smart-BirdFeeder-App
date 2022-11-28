@@ -45,6 +45,7 @@ dependencies:
   intl: ^0.17.0
   http: ^0.13.5
   audio_waveforms: ^0.1.5+1
+  blur: ^3.1.0
 
 dev_dependencies:
   flutter_test:

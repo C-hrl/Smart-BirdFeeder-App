@@ -1,4 +1,5 @@
 import 'package:audio_waveforms/audio_waveforms.dart';
+import 'package:blur/blur.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -342,47 +343,72 @@ class _AudioPlayer extends ConsumerState<AudioPlayer>
       builder: (context, snapshot) {
         var ready = (birdSongController.playerState != PlayerState.stopped);
         return Column(
+          //making sure the widgets go to the
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
             SafeArea(
-                child: 
-                AnimatedSlide(
-          offset: ready ? Offset.zero : const Offset(0.0, 1.0), duration: const Duration(milliseconds: 400),
-          curve: Curves.easeOut,
-          child:
-                Container(
-              color: colorWhite,
-              height: 140,
-              child:
-                  Column(mainAxisAlignment: MainAxisAlignment.end, children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                 
+              child: AnimatedSlide(
+                offset: ready ? Offset.zero : const Offset(0.0, 1.0),
+                duration: const Duration(milliseconds: 400),
+                curve: Curves.easeOut,
+                child: Stack(children: [
+                  SizedBox(
+                    height: 100,
+                    child: Stack(children: [
+                      //frost/transparent music player background
+                      Blur(
+                          blur: 2,
+                          child: Container(
+                            decoration: BoxDecoration(
+                                color: Colors.white.withOpacity(0.4)),
+                          )),
+                      Column(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            if (birdSongController.playerState !=
+                                PlayerState.stopped) ...[
+                              Padding(
+                                padding: const EdgeInsets.all(5),
+                                child: Center(
+                                  child: AudioFileWaveforms(
+                                    density: 3,
+                                    size: Size(
+                                        MediaQuery.of(context).size.width *
+                                            0.65,
+                                        90),
+                                    playerController: birdSongController,
+                                    playerWaveStyle: PlayerWaveStyle(
+                                      fixedWaveColor: colorGolden,
+                                      seekLineColor: colorGoldenAccent,
+                                      scaleFactor: 0.4,
+                                      waveThickness: 6,
+                                      liveWaveColor: colorGolden,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ]
+                          ]),
+                    ]),
+                  ),
+                  /* Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
                       IconButton(
                           onPressed: () async {
                             await birdSongController.startPlayer();
                           },
-                          icon: const FaIcon(FontAwesomeIcons.play)),
-                    
-                  ],
-                ),
-                if (birdSongController.playerState != PlayerState.stopped) ...[
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: AudioFileWaveforms(
-                      size: Size(MediaQuery.of(context).size.width * 0.6, 60),
-                      playerController: birdSongController,
-                      playerWaveStyle: const PlayerWaveStyle(),
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(12),
-                          color: colorBlue),
-                    ),
-                  ),
-                ]
-              ]),
-            ))),
+                          icon: FaIcon(
+                            FontAwesomeIcons.play,
+                            size: 50,
+                            color: colorGolden,
+                          )),
+                    ],
+                  ), */
+                ]),
+              ),
+            ),
           ],
         );
       },
