@@ -340,11 +340,17 @@ class _AudioPlayer extends ConsumerState<AudioPlayer>
       future:
           preparePlayer(), //in future builder because ref.watch during initstate causes issues
       builder: (context, snapshot) {
+        var ready = (birdSongController.playerState != PlayerState.stopped);
         return Column(
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
             SafeArea(
-                child: Container(
+                child: 
+                AnimatedSlide(
+          offset: ready ? Offset.zero : const Offset(0.0, 1.0), duration: const Duration(milliseconds: 400),
+          curve: Curves.easeOut,
+          child:
+                Container(
               color: colorWhite,
               height: 140,
               child:
@@ -353,17 +359,16 @@ class _AudioPlayer extends ConsumerState<AudioPlayer>
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    if (birdSongController.playerState !=
-                        PlayerState.stopped) ...[
+
                       IconButton(
                           onPressed: () async {
                             await birdSongController.startPlayer();
                           },
                           icon: const FaIcon(FontAwesomeIcons.play)),
-                    ]
+                    
                   ],
                 ),
-                if (birdSongController.playerState != PlayerState.stopped) ...[
+
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: AudioFileWaveforms(
@@ -375,9 +380,9 @@ class _AudioPlayer extends ConsumerState<AudioPlayer>
                           color: colorBlue),
                     ),
                   ),
-                ]
+                
               ]),
-            )),
+            ))),
           ],
         );
       },
