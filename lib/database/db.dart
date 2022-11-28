@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive/hive.dart';
 import 'package:path_provider/path_provider.dart';
@@ -39,28 +42,35 @@ Future<Box<List<Bird>>> setupDatabase() async {
   var now = DateTime.now();
   await box.clear();
   addToKey(box, now,
-      Bird('Mésange', 'Paridae', 20.0, 58.0, 98.4, "path/sound.ogg", now));
+      Bird('Mésange', 'Paridae', 20.0, 58.0, 98.4, "", now));
+
+  //loads audio test in android files.
+  var appDirectory = await getApplicationDocumentsDirectory();
+  final file1 = File('${appDirectory.path}/audio1.mp3');
+    await file1.writeAsBytes(
+        (await rootBundle.load('sounds/Rougegorge.mp3')).buffer.asUint8List());
+
   addToKey(
       box,
       now,
       Bird('Rouge-Gorge', 'Erithacus rubecula', 20, 58.0, 98.4,
-          "path/sound.ogg", now));
+          file1.path, now));
   var other = now.add(const Duration(days: 3, hours: 9));
   addToKey(
       box,
       other,
-      Bird('Moineau', 'Passer domesticus', 20, 58.0, 98.4, "path/sound.ogg",
+      Bird('Moineau', 'Passer domesticus', 20, 58.0, 98.4, "",
           other));
 
   var other2 = now.add(const Duration(days: 3, hours: 10));
   addToKey(box, other2,
-      Bird('Merle', "Turdus merula", 21, 48.0, 60.4, "path/sound.ogg", other2));
+      Bird('Merle', "Turdus merula", 21, 48.0, 60.4, "", other2));
 
   addToKey(
       box,
       other2,
       Bird('Rouge-Gorge', 'Erithacus rubecula', 10, 70.0, 50.4,
-          "path/sound.ogg", other2));
+          "", other2));
 
   cachedDb = box;
   return cachedDb!;

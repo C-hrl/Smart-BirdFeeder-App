@@ -167,7 +167,12 @@ class BirdList extends ConsumerWidget {
         fit: FlexFit.loose,
         child: Column(
             children: getBirds(ref, currentlySelectedDay)
-                .map((bird) => BirdCard(bird: bird))
+                .map((bird) { 
+                  return GestureDetector(
+                    onTap: () => ref.watch(selectedBirdSongPathProvider.notifier).state = bird.soundPath,
+                    child: BirdCard(bird: bird)
+                  );  
+                })
                 .toList()));
   }
 }
@@ -285,7 +290,7 @@ class DisplayNumberOfBirdPerDay extends ConsumerWidget {
 }
 
 final selectedBirdSongPathProvider = StateProvider<String>((ref) {
-  return "sounds/Rougegorge.mp3";
+  return "";
 });
 
 class AudioPlayer extends ConsumerStatefulWidget {
@@ -295,46 +300,71 @@ class AudioPlayer extends ConsumerStatefulWidget {
   ConsumerState<ConsumerStatefulWidget> createState() => _AudioPlayer();
 }
 
-class _AudioPlayer extends ConsumerState<AudioPlayer>
-    with WidgetsBindingObserver {
+class _AudioPlayer extends ConsumerState<AudioPlayer> with WidgetsBindingObserver {
   late final PlayerController birdSongController;
   @override
   void initState() {
     super.initState();
-    birdSongController = PlayerController();
-    preparePlayer();
+    birdSongController = PlayerController(); 
   }
 
-  void preparePlayer() async {
-    birdSongController.preparePlayer(ref.watch(selectedBirdSongPathProvider));
+  @override
+  void dispose() {
+    birdSongController.dispose();
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.detached) {
+      birdSongController.dispose();
+    }
+    super.didChangeAppLifecycleState(state);
+  }
+
+  Future<void> preparePlayer() async {
+    String path = ref.watch(selectedBirdSongPathProvider);
+    if(path.isEmpty) {
+      birdSongController.setPlayerState(PlayerState.stopped); //stopped if no sound selected
+    } else {
+      await birdSongController.preparePlayer(path);
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.end,
-      children: [
-        Container(
-          color: colorWhite,
-          height: 140,
-          child: Column(mainAxisAlignment: MainAxisAlignment.end, children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                IconButton(
-                    onPressed: () async {
-                      await birdSongController.startPlayer();
-                    },
-                    icon: const FaIcon(FontAwesomeIcons.play)),
-              ],
-            ),
-            AudioFileWaveforms(
-                size: Size(MediaQuery.of(context).size.width * 0.6, 70),
-                playerController: birdSongController)
-          ]),
-        ),
-      ],
-    );
+    return FutureBuilder(
+      future: preparePlayer(), //in future builder because ref.watch during initstate causes issues
+      builder: (context, snapshot) {
+          return Column(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              Container(
+                color: colorWhite,
+                height: 140,
+                child: Column(mainAxisAlignment: MainAxisAlignment.end, children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      if (birdSongController.playerState != PlayerState.stopped) ...[
+                      IconButton(
+                          onPressed: () async {
+                            await birdSongController.startPlayer();
+                          },
+                          icon: const FaIcon(FontAwesomeIcons.play)),
+                      ]
+                    ],
+                  ),
+                  SafeArea(child: 
+                  AudioFileWaveforms(
+                      size: Size(MediaQuery.of(context).size.width * 0.6, 70),
+                      playerController: birdSongController))
+                ]),
+              ),
+            ],
+        );
+    },);
+    
   }
 }
