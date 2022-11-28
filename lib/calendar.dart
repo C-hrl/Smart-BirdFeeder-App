@@ -343,7 +343,8 @@ class _AudioPlayer extends ConsumerState<AudioPlayer>
         return Column(
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
-            Container(
+            SafeArea(
+                child: Container(
               color: colorWhite,
               height: 140,
               child:
@@ -362,8 +363,8 @@ class _AudioPlayer extends ConsumerState<AudioPlayer>
                     ]
                   ],
                 ),
-                SafeArea(
-                  child: Padding(
+                if (birdSongController.playerState != PlayerState.stopped) ...[
+                  Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: AudioFileWaveforms(
                       size: Size(MediaQuery.of(context).size.width * 0.6, 60),
@@ -374,9 +375,9 @@ class _AudioPlayer extends ConsumerState<AudioPlayer>
                           color: colorBlue),
                     ),
                   ),
-                )
+                ]
               ]),
-            ),
+            )),
           ],
         );
       },
