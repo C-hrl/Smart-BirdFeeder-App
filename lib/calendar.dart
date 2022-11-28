@@ -148,7 +148,7 @@ class CalendarDisplay extends ConsumerWidget {
               ),
               const BirdList(),
               const SizedBox(
-                height: 140,
+                height: 100,
               )
             ],
           ),
