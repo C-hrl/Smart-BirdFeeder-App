@@ -156,7 +156,7 @@ class CalendarDisplay extends ConsumerWidget {
             ],
           ),
         ),
-        const AudioPlayer()
+        const AudioPlayer(totalSize: 160, buttonsSize: 80, bordersSize: 2, sidesMultiplier: 0.5,)
       ]),
     );
   }
@@ -299,7 +299,12 @@ final selectedBirdSongPathProvider = StateProvider<String>((ref) {
 });
 
 class AudioPlayer extends ConsumerStatefulWidget {
-  const AudioPlayer({Key? key}) : super(key: key);
+  const AudioPlayer({Key? key, required this.buttonsSize, required this.totalSize, this.bordersSize = 1.0, this.sidesMultiplier = 1.0}) : super(key: key);
+
+  final double buttonsSize;
+  final double totalSize;
+  final double bordersSize;
+  final double sidesMultiplier;
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() => _AudioPlayer();
@@ -356,13 +361,13 @@ class _AudioPlayer extends ConsumerState<AudioPlayer>
                 curve: Curves.easeOut,
                 child: 
                 SizedBox(
-                    height: 140,
+                    height: widget.totalSize,
                     child: 
                 Stack(
                   alignment: Alignment.bottomCenter,
                   children: [
                   SizedBox(
-                    height: 120,
+                    height: widget.totalSize - widget.buttonsSize/2 + widget.bordersSize,
                     child: Stack(children: [
                       //frost/transparent music player background
                       Blur(
@@ -371,6 +376,11 @@ class _AudioPlayer extends ConsumerState<AudioPlayer>
                             decoration: BoxDecoration(
                                 color: Colors.white.withOpacity(0.4)),
                           )),
+                      Container(
+                decoration: BoxDecoration(
+                  border: Border(top: BorderSide(color:colorGolden.withOpacity(0.6), width: widget.bordersSize))
+                ),
+    ),
                       Column(
                           mainAxisAlignment: MainAxisAlignment.end,
                           children: [
@@ -407,49 +417,27 @@ class _AudioPlayer extends ConsumerState<AudioPlayer>
                           alignment: WrapAlignment.center,
                           spacing: 40,
                           children: [
-                            IconButton(
-                  
-                            
-                        color: colorGoldenAccent,
-                          onPressed: () async {
+                            Padding(padding: EdgeInsets.only(top: widget.buttonsSize * (1.0-widget.sidesMultiplier)/2), child:
+                            PlayerButton(birdSongController: birdSongController, bordersSize: widget.bordersSize, buttonsSize: widget.buttonsSize * widget.sidesMultiplier,
+                            icon: FontAwesomeIcons.backward, onPressed: () async {
                             //5 seconds back 
                             await birdSongController.seekTo(await birdSongController.getDuration(DurationType.current) - 5000);
-                          },
-                          icon: FaIcon(
-                            FontAwesomeIcons.backward,
-                            size: 40,
-                            color: colorGolden,
-                          )).customfrosted(height: 50, width: 50, borderRadius: BorderRadius.circular(20), blur: 2),
-                      IconButton(
-                        padding: const EdgeInsets.all(10.0),
-                        color: colorGoldenAccent,
-                          onPressed: () async {
+                          },)),
+                          PlayerButton(birdSongController: birdSongController, bordersSize: widget.bordersSize, buttonsSize: widget.buttonsSize,
+                            icon: birdSongController.playerState == PlayerState.playing ? FontAwesomeIcons.pause: FontAwesomeIcons.play, onPressed: () async {
                             if(birdSongController.playerState == PlayerState.playing) {
                               await birdSongController.pausePlayer();
                             }
                             else {
                               await birdSongController.startPlayer();
                             }
-                          },
-                          icon: FaIcon(
-                            birdSongController.playerState == PlayerState.playing ? FontAwesomeIcons.pause: FontAwesomeIcons.play,
-                            size: 40,
-                            color: colorGolden,
-                          )).customfrosted(height: 50, width: 50, borderRadius: BorderRadius.circular(20), blur: 2),
-                          IconButton(
-                
-                            
-                        color: colorGoldenAccent,
-                          onPressed: () async {
+                          },),
+                          Padding(padding: EdgeInsets.only(top: widget.buttonsSize * (1.0-widget.sidesMultiplier)/2), child:
+                          PlayerButton(birdSongController: birdSongController, bordersSize: widget.bordersSize, buttonsSize: widget.buttonsSize * widget.sidesMultiplier,
+                            icon: FontAwesomeIcons.forward, onPressed: () async {
                             //add 5 seconds 
                             await birdSongController.seekTo(await birdSongController.getDuration(DurationType.current) + 5000);
-                          },
-                          icon: FaIcon(
-                            FontAwesomeIcons.forward,
-                            size: 40,
-                            color: colorGolden,
-                          )).customfrosted(height: 50, width: 50, borderRadius: BorderRadius.circular(20), blur: 2),
-                          
+                          },))                          
                         ])
                       ),
                   /* Row(
@@ -477,6 +465,49 @@ class _AudioPlayer extends ConsumerState<AudioPlayer>
   }
 }
 
+class PlayerButton extends StatefulWidget {
+  const PlayerButton({
+    Key? key,
+    required this.buttonsSize,
+    required this.bordersSize,
+    required this.birdSongController,
+    required this.icon,
+    required this.onPressed,
+  }) : super(key: key);
+
+  final double buttonsSize;
+  final double bordersSize;
+  final PlayerController birdSongController;
+  final IconData icon;
+  final void Function() onPressed;
+
+  @override
+  State<PlayerButton> createState() => _PlayerButtonState();
+}
+
+class _PlayerButtonState extends State<PlayerButton> {
+  @override
+  Widget build(BuildContext context) {
+    double iconSize = widget.buttonsSize * 0.6;
+    return IconButton(
+            iconSize: iconSize,
+            color: colorGoldenAccent,
+            onPressed: widget.onPressed,
+            icon: FaIcon(
+              widget.icon,
+              size: iconSize,
+              color: colorGolden,
+            ))
+        .customfrosted(
+            height: widget.buttonsSize,
+            width: widget.buttonsSize,
+            borderRadius: BorderRadius.circular(100),
+            blur: 2,
+            frostOpacity: 0.4,
+            borderSize: widget.bordersSize);
+  }
+}
+
 
 class CustomHalfCircleClipper extends CustomClipper<Path> {
   @override
@@ -494,33 +525,6 @@ class CustomHalfCircleClipper extends CustomClipper<Path> {
     return true;
   }
 }
-/*
-class BorderPaint extends CustomPainter {
-  @override
-  void paint(Canvas canvas, Size size) {
-    Paint paint = Paint()
-    ..style = PaintingStyle.stroke
-    ..strokeWidth=10.0
-    ..strokeCap = StrokeCap.round
-    ..color = Colors.black;
-    final path = Path()
-      ..moveTo(0, size.height)
-      ..arcToPoint(Offset(size.width/2, 0),
-          radius: Radius.circular(math.max(size.width, size.height)))
-      ..arcToPoint(Offset(size.width, size.height),
-          radius: Radius.circular(math.max(size.width, size.height)));
-    path.close();
-    canvas.drawPath(path, paint);
-  }
-
-
-  @override
-  bool shouldRepaint(BorderPaint oldDelegate) => false;
-  @override
-  bool shouldRebuildSemantics(BorderPaint oldDelegate) => false;
-
-
-}*/
 
 extension FrostExtension on Widget {
   Stack customfrosted({
@@ -531,12 +535,15 @@ extension FrostExtension on Widget {
     double? width,
     double frostOpacity = 0.0,
     BorderRadius? borderRadius,
+    double borderSize = 1.0,
     EdgeInsetsGeometry padding = EdgeInsets.zero,
     BoxDecoration? decoration,
   }) {
     return 
-    Stack( children: [
-    ClipPath(
+    Stack( 
+      alignment: Alignment.center,
+      children: [
+    ClipPath( //blurred semi circle
           clipper: CustomHalfCircleClipper(),
       child: Blur(
       blur: blur,
@@ -555,18 +562,18 @@ extension FrostExtension on Widget {
      
     )), 
     //CustomPaint(painter: BorderPaint(), child: Padding(padding: padding, child: this,),),
-    ClipPath(
+    ClipPath( //borders
       clipper: CustomHalfCircleClipper(),
       child: Container(
         height: height,
                 width: width,
                 padding: padding,
                 decoration: BoxDecoration(
-                  borderRadius:  BorderRadius.circular(40),
-                  border: Border.all(color: colorGolden.withOpacity(0.3), width: 4)
+                  borderRadius:  BorderRadius.circular(100),
+                  border: Border.all(color: colorGolden.withOpacity(0.6), width: borderSize)
                 ),
     )),
-    Padding(padding: padding, child: this,)
+    Padding(padding: padding, child: this,) //button
     ]);
   }
 }
