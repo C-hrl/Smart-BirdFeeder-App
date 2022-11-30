@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:audio_waveforms/audio_waveforms.dart';
 import 'package:blur/blur.dart';
 import 'package:flutter/material.dart';
@@ -12,7 +10,6 @@ import 'package:smart_bird_feeder/theme/styles.dart';
 import 'package:smart_bird_feeder/theme/theme.dart';
 import 'package:smart_bird_feeder/utils.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
-import 'dart:math' as math;
 
 final selectedDayProvider = StateProvider<DateTime>((ref) {
   return DateTime.now();
