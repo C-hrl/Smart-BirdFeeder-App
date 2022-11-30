@@ -156,7 +156,7 @@ class CalendarDisplay extends ConsumerWidget {
             ],
           ),
         ),
-        const AudioPlayer(totalSize: 160, buttonsSize: 80, bordersSize: 2, sidesMultiplier: 0.5,)
+        const AudioPlayer(totalSize: 160, buttonsSize: 80, bordersSize: 2, sidesMultiplier: 0.75, spacing: 10,)
       ]),
     );
   }
@@ -299,12 +299,13 @@ final selectedBirdSongPathProvider = StateProvider<String>((ref) {
 });
 
 class AudioPlayer extends ConsumerStatefulWidget {
-  const AudioPlayer({Key? key, required this.buttonsSize, required this.totalSize, this.bordersSize = 1.0, this.sidesMultiplier = 1.0}) : super(key: key);
+  const AudioPlayer({Key? key, required this.buttonsSize, required this.totalSize, this.bordersSize = 1.0, this.sidesMultiplier = 1.0, this.spacing = 20}) : super(key: key);
 
   final double buttonsSize;
   final double totalSize;
   final double bordersSize;
   final double sidesMultiplier;
+  final double spacing;
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() => _AudioPlayer();
@@ -415,29 +416,51 @@ class _AudioPlayer extends ConsumerState<AudioPlayer>
                     child:
                         Wrap( 
                           alignment: WrapAlignment.center,
-                          spacing: 40,
+                          spacing: widget.spacing,
                           children: [
+                            Padding(padding: EdgeInsets.only(top: widget.buttonsSize * (1.0-widget.sidesMultiplier*widget.sidesMultiplier)/2), child:
+                            PlayerButton(birdSongController: birdSongController, bordersSize: widget.bordersSize, buttonsSize: widget.buttonsSize * widget.sidesMultiplier*widget.sidesMultiplier,
+                            icon: FontAwesomeIcons.backwardFast, onPressed: (state) async {
+                            //10 seconds back 
+                            await birdSongController.seekTo(await birdSongController.getDuration(DurationType.current) - 10000);
+                          },)),
                             Padding(padding: EdgeInsets.only(top: widget.buttonsSize * (1.0-widget.sidesMultiplier)/2), child:
                             PlayerButton(birdSongController: birdSongController, bordersSize: widget.bordersSize, buttonsSize: widget.buttonsSize * widget.sidesMultiplier,
-                            icon: FontAwesomeIcons.backward, onPressed: () async {
+                            icon: FontAwesomeIcons.backward, onPressed: (state) async {
                             //5 seconds back 
                             await birdSongController.seekTo(await birdSongController.getDuration(DurationType.current) - 5000);
                           },)),
                           PlayerButton(birdSongController: birdSongController, bordersSize: widget.bordersSize, buttonsSize: widget.buttonsSize,
-                            icon: birdSongController.playerState == PlayerState.playing ? FontAwesomeIcons.pause: FontAwesomeIcons.play, onPressed: () async {
+                            icon: birdSongController.playerState == PlayerState.playing ? FontAwesomeIcons.pause: FontAwesomeIcons.play, onPressed: (state) async {
                             if(birdSongController.playerState == PlayerState.playing) {
                               await birdSongController.pausePlayer();
+                              if(birdSongController.playerState != PlayerState.playing) { //change icon if pause worked
+                                state.setState(() {
+                                  state.icon = FontAwesomeIcons.play;
+                                });
+                              }
                             }
                             else {
                               await birdSongController.startPlayer();
+                              if(birdSongController.playerState == PlayerState.playing) { //change icon if play worked
+                                state.setState(() {
+                                  state.icon = FontAwesomeIcons.pause;
+                                });
+                              }
                             }
                           },),
                           Padding(padding: EdgeInsets.only(top: widget.buttonsSize * (1.0-widget.sidesMultiplier)/2), child:
                           PlayerButton(birdSongController: birdSongController, bordersSize: widget.bordersSize, buttonsSize: widget.buttonsSize * widget.sidesMultiplier,
-                            icon: FontAwesomeIcons.forward, onPressed: () async {
+                            icon: FontAwesomeIcons.forward, onPressed: (state) async {
                             //add 5 seconds 
                             await birdSongController.seekTo(await birdSongController.getDuration(DurationType.current) + 5000);
-                          },))                          
+                          },)),
+                          Padding(padding: EdgeInsets.only(top: widget.buttonsSize * (1.0-widget.sidesMultiplier*widget.sidesMultiplier)/2), child:
+                            PlayerButton(birdSongController: birdSongController, bordersSize: widget.bordersSize, buttonsSize: widget.buttonsSize * widget.sidesMultiplier*widget.sidesMultiplier,
+                            icon: FontAwesomeIcons.forwardFast, onPressed: (state) async {
+                            //adds 10 seconds 
+                            await birdSongController.seekTo(await birdSongController.getDuration(DurationType.current) + 10000);
+                          },)),                         
                         ])
                       ),
                   /* Row(
@@ -479,22 +502,25 @@ class PlayerButton extends StatefulWidget {
   final double bordersSize;
   final PlayerController birdSongController;
   final IconData icon;
-  final void Function() onPressed;
+  final Future<void> Function(_PlayerButtonState) onPressed;
 
   @override
   State<PlayerButton> createState() => _PlayerButtonState();
 }
 
 class _PlayerButtonState extends State<PlayerButton> {
+
+  IconData? icon;
+
   @override
   Widget build(BuildContext context) {
     double iconSize = widget.buttonsSize * 0.6;
     return IconButton(
             iconSize: iconSize,
             color: colorGoldenAccent,
-            onPressed: widget.onPressed,
+            onPressed: () async {await widget.onPressed(this);},
             icon: FaIcon(
-              widget.icon,
+              icon ?? widget.icon,
               size: iconSize,
               color: colorGolden,
             ))
