@@ -500,21 +500,6 @@ class _AudioPlayer extends ConsumerState<AudioPlayer>
                                       },
                                     )),
                               ])),
-                      /* Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      IconButton(
-                          onPressed: () async {
-                            await birdSongController.startPlayer();
-                          },
-                          icon: FaIcon(
-                            FontAwesomeIcons.play,
-                            size: 50,
-                            color: colorGolden,
-                          )),
-                    ],
-                  ), */
                     ])),
               ),
             ),
