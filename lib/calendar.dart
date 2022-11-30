@@ -350,7 +350,9 @@ class _AudioPlayer extends ConsumerState<AudioPlayer>
       birdSongController
           .setPlayerState(PlayerState.stopped); //stopped if no sound selected
     } else {
-      birdSongController.onPlayerStateChanged.listen((state) {ref.watch(currentPlayerState.notifier).state = state;});
+      birdSongController.onPlayerStateChanged.listen((state) {
+        ref.watch(currentPlayerState.notifier).state = state;
+      });
       await birdSongController.preparePlayer(path);
     }
   }
@@ -414,7 +416,7 @@ class _AudioPlayer extends ConsumerState<AudioPlayer>
                                           seekLineColor: colorGoldenAccent,
                                           scaleFactor: 0.4,
                                           waveThickness: 6,
-                                          liveWaveColor: colorGolden,
+                                          liveWaveColor: colorGoldenAccent,
                                         ),
                                       ),
                                     ),
@@ -458,7 +460,7 @@ class _AudioPlayer extends ConsumerState<AudioPlayer>
                                       case PlayerState.playing:
                                         return FontAwesomeIcons.pause;
                                       default:
-                                        return FontAwesomeIcons.play;      
+                                        return FontAwesomeIcons.play;
                                     }
                                   },
                                   onPressed: () async {
@@ -466,7 +468,8 @@ class _AudioPlayer extends ConsumerState<AudioPlayer>
                                         PlayerState.playing) {
                                       await birdSongController.pausePlayer();
                                     } else {
-                                      await birdSongController.startPlayer();
+                                      await birdSongController.startPlayer(
+                                          finishMode: FinishMode.loop);
                                     }
                                   },
                                 ),
@@ -523,9 +526,13 @@ class ConsumerPlayerButton extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return PlayerButton(buttonsSize: buttonsSize, bordersSize: bordersSize, birdSongController: birdSongController, icon: buildIcon(ref.watch(currentPlayerState)), onPressed: onPressed);
+    return PlayerButton(
+        buttonsSize: buttonsSize,
+        bordersSize: bordersSize,
+        birdSongController: birdSongController,
+        icon: buildIcon(ref.watch(currentPlayerState)),
+        onPressed: onPressed);
   }
-
 }
 
 class PlayerButton extends StatelessWidget {
