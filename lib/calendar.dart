@@ -431,29 +431,6 @@ class _AudioPlayer extends ConsumerState<AudioPlayer>
                                 Padding(
                                     padding: EdgeInsets.only(
                                         top: widget.buttonsSize *
-                                            (1.0 -
-                                                widget.sidesMultiplier *
-                                                    widget.sidesMultiplier) /
-                                            2),
-                                    child: PlayerButton(
-                                      birdSongController: birdSongController,
-                                      bordersSize: widget.bordersSize,
-                                      buttonsSize: widget.buttonsSize *
-                                          widget.sidesMultiplier *
-                                          widget.sidesMultiplier,
-                                      icon: FontAwesomeIcons.backwardFast,
-                                      onPressed: (state) async {
-                                        //10 seconds back
-                                        await birdSongController.seekTo(
-                                            await birdSongController
-                                                    .getDuration(
-                                                        DurationType.current) -
-                                                10000);
-                                      },
-                                    )),
-                                Padding(
-                                    padding: EdgeInsets.only(
-                                        top: widget.buttonsSize *
                                             (1.0 - widget.sidesMultiplier) /
                                             2),
                                     child: PlayerButton(
@@ -520,29 +497,6 @@ class _AudioPlayer extends ConsumerState<AudioPlayer>
                                                     .getDuration(
                                                         DurationType.current) +
                                                 5000);
-                                      },
-                                    )),
-                                Padding(
-                                    padding: EdgeInsets.only(
-                                        top: widget.buttonsSize *
-                                            (1.0 -
-                                                widget.sidesMultiplier *
-                                                    widget.sidesMultiplier) /
-                                            2),
-                                    child: PlayerButton(
-                                      birdSongController: birdSongController,
-                                      bordersSize: widget.bordersSize,
-                                      buttonsSize: widget.buttonsSize *
-                                          widget.sidesMultiplier *
-                                          widget.sidesMultiplier,
-                                      icon: FontAwesomeIcons.forwardFast,
-                                      onPressed: (state) async {
-                                        //adds 10 seconds
-                                        await birdSongController.seekTo(
-                                            await birdSongController
-                                                    .getDuration(
-                                                        DurationType.current) +
-                                                10000);
                                       },
                                     )),
                               ])),
