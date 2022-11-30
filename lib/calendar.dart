@@ -153,7 +153,13 @@ class CalendarDisplay extends ConsumerWidget {
             ],
           ),
         ),
-        const AudioPlayer(totalSize: 160, buttonsSize: 80, bordersSize: 2, sidesMultiplier: 0.75, spacing: 10,)
+        const AudioPlayer(
+          totalSize: 160,
+          buttonsSize: 80,
+          bordersSize: 2,
+          sidesMultiplier: 0.75,
+          spacing: 10,
+        )
       ]),
     );
   }
@@ -296,7 +302,14 @@ final selectedBirdSongPathProvider = StateProvider<String>((ref) {
 });
 
 class AudioPlayer extends ConsumerStatefulWidget {
-  const AudioPlayer({Key? key, required this.buttonsSize, required this.totalSize, this.bordersSize = 1.0, this.sidesMultiplier = 1.0, this.spacing = 20}) : super(key: key);
+  const AudioPlayer(
+      {Key? key,
+      required this.buttonsSize,
+      required this.totalSize,
+      this.bordersSize = 1.0,
+      this.sidesMultiplier = 1.0,
+      this.spacing = 20})
+      : super(key: key);
 
   final double buttonsSize;
   final double totalSize;
@@ -357,110 +370,183 @@ class _AudioPlayer extends ConsumerState<AudioPlayer>
                 offset: ready ? Offset.zero : const Offset(0.0, 1.0),
                 duration: const Duration(milliseconds: 400),
                 curve: Curves.easeOut,
-                child: 
-                SizedBox(
+                child: SizedBox(
                     height: widget.totalSize,
-                    child: 
-                Stack(
-                  alignment: Alignment.bottomCenter,
-                  children: [
-                  SizedBox(
-                    height: widget.totalSize - widget.buttonsSize/2 + widget.bordersSize,
-                    child: Stack(children: [
-                      //frost/transparent music player background
-                      Blur(
-                          blur: 2,
-                          child: Container(
+                    child: Stack(alignment: Alignment.bottomCenter, children: [
+                      SizedBox(
+                        height: widget.totalSize -
+                            widget.buttonsSize / 2 +
+                            widget.bordersSize,
+                        child: Stack(children: [
+                          //frost/transparent music player background
+                          Blur(
+                              blur: 2,
+                              child: Container(
+                                decoration: BoxDecoration(
+                                    color: Colors.white.withOpacity(0.4)),
+                              )),
+                          Container(
                             decoration: BoxDecoration(
-                                color: Colors.white.withOpacity(0.4)),
-                          )),
-                      Container(
-                decoration: BoxDecoration(
-                  border: Border(top: BorderSide(color:colorGolden.withOpacity(0.6), width: widget.bordersSize))
-                ),
-    ),
-                      Column(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            if (birdSongController.playerState !=
-                                PlayerState.stopped) ...[
-                              Padding(
-                                padding: const EdgeInsets.all(5).add(const EdgeInsets.only(top: 10)),
-                                child: Center(
-                                  child: AudioFileWaveforms(
-                                    density: 3,
-                                    size: Size(
-                                        MediaQuery.of(context).size.width *
-                                            0.65,
-                                        90),
-                                    playerController: birdSongController,
-                                    playerWaveStyle: PlayerWaveStyle(
-                                      fixedWaveColor: colorGolden,
-                                      seekLineColor: colorGoldenAccent,
-                                      scaleFactor: 0.4,
-                                      waveThickness: 6,
-                                      liveWaveColor: colorGolden,
+                                border: Border(
+                                    top: BorderSide(
+                                        color: colorGolden.withOpacity(0.6),
+                                        width: widget.bordersSize))),
+                          ),
+                          Column(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                if (birdSongController.playerState !=
+                                    PlayerState.stopped) ...[
+                                  Padding(
+                                    padding: const EdgeInsets.all(5)
+                                        .add(const EdgeInsets.only(top: 10)),
+                                    child: Center(
+                                      child: AudioFileWaveforms(
+                                        density: 3,
+                                        size: Size(
+                                            MediaQuery.of(context).size.width *
+                                                0.65,
+                                            90),
+                                        playerController: birdSongController,
+                                        playerWaveStyle: PlayerWaveStyle(
+                                          fixedWaveColor: colorGolden,
+                                          seekLineColor: colorGoldenAccent,
+                                          scaleFactor: 0.4,
+                                          waveThickness: 6,
+                                          liveWaveColor: colorGolden,
+                                        ),
+                                      ),
                                     ),
                                   ),
-                                ),
-                              ),
-                            ]
-                          ]),
-                    ]),
-                  ),
-                  Positioned(
-                    top: 0.0,
-                    child:
-                        Wrap( 
-                          alignment: WrapAlignment.center,
-                          spacing: widget.spacing,
-                          children: [
-                            Padding(padding: EdgeInsets.only(top: widget.buttonsSize * (1.0-widget.sidesMultiplier*widget.sidesMultiplier)/2), child:
-                            PlayerButton(birdSongController: birdSongController, bordersSize: widget.bordersSize, buttonsSize: widget.buttonsSize * widget.sidesMultiplier*widget.sidesMultiplier,
-                            icon: FontAwesomeIcons.backwardFast, onPressed: (state) async {
-                            //10 seconds back 
-                            await birdSongController.seekTo(await birdSongController.getDuration(DurationType.current) - 10000);
-                          },)),
-                            Padding(padding: EdgeInsets.only(top: widget.buttonsSize * (1.0-widget.sidesMultiplier)/2), child:
-                            PlayerButton(birdSongController: birdSongController, bordersSize: widget.bordersSize, buttonsSize: widget.buttonsSize * widget.sidesMultiplier,
-                            icon: FontAwesomeIcons.backward, onPressed: (state) async {
-                            //5 seconds back 
-                            await birdSongController.seekTo(await birdSongController.getDuration(DurationType.current) - 5000);
-                          },)),
-                          PlayerButton(birdSongController: birdSongController, bordersSize: widget.bordersSize, buttonsSize: widget.buttonsSize,
-                            icon: birdSongController.playerState == PlayerState.playing ? FontAwesomeIcons.pause: FontAwesomeIcons.play, onPressed: (state) async {
-                            if(birdSongController.playerState == PlayerState.playing) {
-                              await birdSongController.pausePlayer();
-                              if(birdSongController.playerState != PlayerState.playing) { //change icon if pause worked
-                                state.setState(() {
-                                  state.icon = FontAwesomeIcons.play;
-                                });
-                              }
-                            }
-                            else {
-                              await birdSongController.startPlayer();
-                              if(birdSongController.playerState == PlayerState.playing) { //change icon if play worked
-                                state.setState(() {
-                                  state.icon = FontAwesomeIcons.pause;
-                                });
-                              }
-                            }
-                          },),
-                          Padding(padding: EdgeInsets.only(top: widget.buttonsSize * (1.0-widget.sidesMultiplier)/2), child:
-                          PlayerButton(birdSongController: birdSongController, bordersSize: widget.bordersSize, buttonsSize: widget.buttonsSize * widget.sidesMultiplier,
-                            icon: FontAwesomeIcons.forward, onPressed: (state) async {
-                            //add 5 seconds 
-                            await birdSongController.seekTo(await birdSongController.getDuration(DurationType.current) + 5000);
-                          },)),
-                          Padding(padding: EdgeInsets.only(top: widget.buttonsSize * (1.0-widget.sidesMultiplier*widget.sidesMultiplier)/2), child:
-                            PlayerButton(birdSongController: birdSongController, bordersSize: widget.bordersSize, buttonsSize: widget.buttonsSize * widget.sidesMultiplier*widget.sidesMultiplier,
-                            icon: FontAwesomeIcons.forwardFast, onPressed: (state) async {
-                            //adds 10 seconds 
-                            await birdSongController.seekTo(await birdSongController.getDuration(DurationType.current) + 10000);
-                          },)),                         
-                        ])
+                                ]
+                              ]),
+                        ]),
                       ),
-                  /* Row(
+                      Positioned(
+                          top: 0.0,
+                          child: Wrap(
+                              alignment: WrapAlignment.center,
+                              spacing: widget.spacing,
+                              children: [
+                                Padding(
+                                    padding: EdgeInsets.only(
+                                        top: widget.buttonsSize *
+                                            (1.0 -
+                                                widget.sidesMultiplier *
+                                                    widget.sidesMultiplier) /
+                                            2),
+                                    child: PlayerButton(
+                                      birdSongController: birdSongController,
+                                      bordersSize: widget.bordersSize,
+                                      buttonsSize: widget.buttonsSize *
+                                          widget.sidesMultiplier *
+                                          widget.sidesMultiplier,
+                                      icon: FontAwesomeIcons.backwardFast,
+                                      onPressed: (state) async {
+                                        //10 seconds back
+                                        await birdSongController.seekTo(
+                                            await birdSongController
+                                                    .getDuration(
+                                                        DurationType.current) -
+                                                10000);
+                                      },
+                                    )),
+                                Padding(
+                                    padding: EdgeInsets.only(
+                                        top: widget.buttonsSize *
+                                            (1.0 - widget.sidesMultiplier) /
+                                            2),
+                                    child: PlayerButton(
+                                      birdSongController: birdSongController,
+                                      bordersSize: widget.bordersSize,
+                                      buttonsSize: widget.buttonsSize *
+                                          widget.sidesMultiplier,
+                                      icon: FontAwesomeIcons.backward,
+                                      onPressed: (state) async {
+                                        //5 seconds back
+                                        await birdSongController.seekTo(
+                                            await birdSongController
+                                                    .getDuration(
+                                                        DurationType.current) -
+                                                5000);
+                                      },
+                                    )),
+                                PlayerButton(
+                                  birdSongController: birdSongController,
+                                  bordersSize: widget.bordersSize,
+                                  buttonsSize: widget.buttonsSize,
+                                  icon: birdSongController.playerState ==
+                                          PlayerState.playing
+                                      ? FontAwesomeIcons.pause
+                                      : FontAwesomeIcons.play,
+                                  onPressed: (state) async {
+                                    if (birdSongController.playerState ==
+                                        PlayerState.playing) {
+                                      await birdSongController.pausePlayer();
+                                      if (birdSongController.playerState !=
+                                          PlayerState.playing) {
+                                        //change icon if pause worked
+                                        state.setState(() {
+                                          state.icon = FontAwesomeIcons.play;
+                                        });
+                                      }
+                                    } else {
+                                      await birdSongController.startPlayer();
+                                      if (birdSongController.playerState ==
+                                          PlayerState.playing) {
+                                        //change icon if play worked
+                                        state.setState(() {
+                                          state.icon = FontAwesomeIcons.pause;
+                                        });
+                                      }
+                                    }
+                                  },
+                                ),
+                                Padding(
+                                    padding: EdgeInsets.only(
+                                        top: widget.buttonsSize *
+                                            (1.0 - widget.sidesMultiplier) /
+                                            2),
+                                    child: PlayerButton(
+                                      birdSongController: birdSongController,
+                                      bordersSize: widget.bordersSize,
+                                      buttonsSize: widget.buttonsSize *
+                                          widget.sidesMultiplier,
+                                      icon: FontAwesomeIcons.forward,
+                                      onPressed: (state) async {
+                                        //add 5 seconds
+                                        await birdSongController.seekTo(
+                                            await birdSongController
+                                                    .getDuration(
+                                                        DurationType.current) +
+                                                5000);
+                                      },
+                                    )),
+                                Padding(
+                                    padding: EdgeInsets.only(
+                                        top: widget.buttonsSize *
+                                            (1.0 -
+                                                widget.sidesMultiplier *
+                                                    widget.sidesMultiplier) /
+                                            2),
+                                    child: PlayerButton(
+                                      birdSongController: birdSongController,
+                                      bordersSize: widget.bordersSize,
+                                      buttonsSize: widget.buttonsSize *
+                                          widget.sidesMultiplier *
+                                          widget.sidesMultiplier,
+                                      icon: FontAwesomeIcons.forwardFast,
+                                      onPressed: (state) async {
+                                        //adds 10 seconds
+                                        await birdSongController.seekTo(
+                                            await birdSongController
+                                                    .getDuration(
+                                                        DurationType.current) +
+                                                10000);
+                                      },
+                                    )),
+                              ])),
+                      /* Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -475,7 +561,7 @@ class _AudioPlayer extends ConsumerState<AudioPlayer>
                           )),
                     ],
                   ), */
-                ])),
+                    ])),
               ),
             ),
           ],
@@ -506,7 +592,6 @@ class PlayerButton extends StatefulWidget {
 }
 
 class _PlayerButtonState extends State<PlayerButton> {
-
   IconData? icon;
 
   @override
@@ -515,7 +600,9 @@ class _PlayerButtonState extends State<PlayerButton> {
     return IconButton(
             iconSize: iconSize,
             color: colorGoldenAccent,
-            onPressed: () async {await widget.onPressed(this);},
+            onPressed: () async {
+              await widget.onPressed(this);
+            },
             icon: FaIcon(
               icon ?? widget.icon,
               size: iconSize,
@@ -530,7 +617,6 @@ class _PlayerButtonState extends State<PlayerButton> {
             borderSize: widget.bordersSize);
   }
 }
-
 
 class CustomHalfCircleClipper extends CustomClipper<Path> {
   @override
@@ -562,41 +648,45 @@ extension FrostExtension on Widget {
     EdgeInsetsGeometry padding = EdgeInsets.zero,
     BoxDecoration? decoration,
   }) {
-    return 
-    Stack( 
-      alignment: Alignment.center,
-      children: [
-    ClipPath( //blurred semi circle
+    return Stack(alignment: Alignment.center, children: [
+      ClipPath(
+          //blurred semi circle
           clipper: CustomHalfCircleClipper(),
-      child: Blur(
-      blur: blur,
-      blurColor: frostColor,
-      borderRadius: borderRadius,
-      child: 
-      Container(
-        height: height,
-        width: width,
+          child: Blur(
+            blur: blur,
+            blurColor: frostColor,
+            borderRadius: borderRadius,
+            child: Container(
+              height: height,
+              width: width,
+              padding: padding,
+              child: height == null || width == null
+                  ? this
+                  : const SizedBox.shrink(),
+              color: decoration == null
+                  ? frostColor.withOpacity(frostOpacity)
+                  : null,
+              decoration: decoration,
+            ),
+            alignment: alignment,
+          )),
+      //CustomPaint(painter: BorderPaint(), child: Padding(padding: padding, child: this,),),
+      ClipPath(
+          //borders
+          clipper: CustomHalfCircleClipper(),
+          child: Container(
+            height: height,
+            width: width,
+            padding: padding,
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(100),
+                border: Border.all(
+                    color: colorGolden.withOpacity(0.6), width: borderSize)),
+          )),
+      Padding(
         padding: padding,
-        child: height == null || width == null ? this : const SizedBox.shrink(),
-        color: decoration == null ? frostColor.withOpacity(frostOpacity) : null,
-        decoration: decoration,
-      ),
-      alignment: alignment,
-     
-    )), 
-    //CustomPaint(painter: BorderPaint(), child: Padding(padding: padding, child: this,),),
-    ClipPath( //borders
-      clipper: CustomHalfCircleClipper(),
-      child: Container(
-        height: height,
-                width: width,
-                padding: padding,
-                decoration: BoxDecoration(
-                  borderRadius:  BorderRadius.circular(100),
-                  border: Border.all(color: colorGolden.withOpacity(0.6), width: borderSize)
-                ),
-    )),
-    Padding(padding: padding, child: this,) //button
+        child: this,
+      ) //button
     ]);
   }
 }
