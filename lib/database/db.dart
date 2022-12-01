@@ -54,7 +54,8 @@ Future<Box<List<Bird>>> setupDatabase() async {
       now,
       Bird('Rouge-Gorge', 'Erithacus rubecula', 20, 58.0, 98.4,
           file1.path /* 'sounds/Rougegorge.mp3' */, now));
-  addToKey(box, now, Bird('Mésange', 'Paridae', 20.0, 58.0, 98.4, "", now));
+  addToKey(box, now,
+      Bird('Test Mésange', 'Paridae', 20.0, 58.0, 98.4, file1.path, now));
   addToKey(box, now, Bird('Mésange', 'Paridae', 20.0, 58.0, 98.4, "", now));
   addToKey(box, now, Bird('Mésange', 'Paridae', 20.0, 58.0, 98.4, "", now));
   var other = now.add(const Duration(days: 3, hours: 9));
