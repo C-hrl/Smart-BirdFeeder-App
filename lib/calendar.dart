@@ -332,20 +332,21 @@ class _AudioPlayer extends ConsumerState<AudioPlayer>
 
   @override
   void dispose() {
-    birdSongController.dispose();
+    birdSongController.stopAllPlayers();
     super.dispose();
   }
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.detached) {
-      birdSongController.dispose();
+      birdSongController.stopAllPlayers();
     }
     super.didChangeAppLifecycleState(state);
   }
 
   Future<void> preparePlayer() async {
     String path = ref.watch(selectedBirdSongPathProvider);
+    await birdSongController.stopPlayer();
     if (path.isEmpty) {
       birdSongController
           .setPlayerState(PlayerState.stopped); //stopped if no sound selected
