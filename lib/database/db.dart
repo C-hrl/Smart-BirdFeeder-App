@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -24,16 +25,16 @@ class Bird {
     var appDirectory = await getApplicationDocumentsDirectory();
     var latinName = json['bird_lt'] as String;
     var unixDate = json['time'] as int;
-    debugPrint(json
-        .toString()); /*final file = File(
+    debugPrint(json.toString()); 
+    final file = File(
         '${appDirectory.path}/${latinName.replaceAll(' ', '_')}_${unixDate}_$id.mp3');
-    await file.writeAsBytes(json['data'] as Uint8List, flush: true);*/
+    await file.writeAsBytes(base64.decode(json['data']), flush: true);
     return Bird(
         json['bird_en'] as String,
         json['bird_lt'] as String,
-        0.0, //json['temperature'] as double,
-        0, //json['humidity'] as double,
-        0, //json['pressure'] as double,
+        json['temperature'] as double,
+        json['humidity'] as double,
+        json['pressure'] as double,
         'test.mp3',
         DateTime.fromMillisecondsSinceEpoch(unixDate * 1000));
   }
