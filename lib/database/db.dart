@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -5,6 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive/hive.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:smart_bird_feeder/database/network.dart';
 
 class Bird {
   String name;
@@ -18,12 +20,31 @@ class Bird {
   Bird(this.name, this.latinName, this.temperature, this.humidity,
       this.pressure, this.soundPath, this.date);
 
+  static Future<Bird> fromJson(int id, Map<String, dynamic> json) async {
+    var appDirectory = await getApplicationDocumentsDirectory();
+    var latinName = json['bird_lt'] as String;
+    var unixDate = json['time'] as int;
+    debugPrint(json
+        .toString()); /*final file = File(
+        '${appDirectory.path}/${latinName.replaceAll(' ', '_')}_${unixDate}_$id.mp3');
+    await file.writeAsBytes(json['data'] as Uint8List, flush: true);*/
+    return Bird(
+        json['bird_en'] as String,
+        json['bird_lt'] as String,
+        0.0, //json['temperature'] as double,
+        0, //json['humidity'] as double,
+        0, //json['pressure'] as double,
+        'test.mp3',
+        DateTime.fromMillisecondsSinceEpoch(unixDate * 1000));
+  }
+
   @override
   String toString() =>
       "Bird( name:$name; latinName:$latinName; temperature:$temperature; humidity:$humidity; pressure:$pressure; soundPath:$soundPath; date:$date)"; // Just for print()
 }
 
 Box<List<Bird>>? cachedDb;
+Timer? timedFetch;
 
 //must be used only after future builder did first setup
 final cachedDbProvider = StateProvider<Box<List<Bird>>>((ref) {
@@ -70,6 +91,18 @@ Future<Box<List<Bird>>> setupDatabase() async {
       Bird('Rouge-Gorge', 'Erithacus rubecula', 10, 70.0, 50.4, "", other2));
 
   cachedDb = box;
+  timedFetch = Timer.periodic(const Duration(seconds: 30), (timer) {
+    getData('http://192.168.0.118:5000').then((birds) {
+      debugPrint('fetch done');
+      if (birds != null) {
+        debugPrint('add birds');
+        for (var bird in birds) {
+          addToKey(box, bird.date, bird);
+        }
+      }
+    });
+  });
+
   return cachedDb!;
 }
 
