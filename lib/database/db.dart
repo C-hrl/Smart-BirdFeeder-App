@@ -35,7 +35,7 @@ class Bird {
         json['temperature'] as double,
         json['humidity'] as double,
         json['pressure'] as double,
-        'test.mp3',
+        file.path,
         DateTime.fromMillisecondsSinceEpoch(unixDate * 1000));
   }
 
