@@ -3,7 +3,6 @@ import 'dart:io';
 
 import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive/hive.dart';
 import 'package:path_provider/path_provider.dart';
@@ -94,8 +93,7 @@ Future<Box<List<Bird>>> setupDatabase() async {
 
   cachedDb = box;
   timedFetch = Timer.periodic(const Duration(seconds: 2), (timer) {
-    if(raspberryIp.isNotEmpty) {
-      getData('http://$raspberryIp').then((birds) {
+      getData('http://${raspberryIp.isNotEmpty ? raspberryIp: 'raspberry-piou.local:5000'}').then((birds) {
         debugPrint('fetch done');
         if (birds != null) {
           debugPrint('add birds');
@@ -104,7 +102,6 @@ Future<Box<List<Bird>>> setupDatabase() async {
           }
         }
       });
-    }
   });
 
   return cachedDb!;
