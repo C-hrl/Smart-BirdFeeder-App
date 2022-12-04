@@ -61,6 +61,7 @@ Future<Box<List<Bird>>> setupDatabase() async {
   }
   var box = await Hive.openBox<List<Bird>>('birdsBox');
   // fill box for testing
+  await box.clear();
   /*var now = DateTime.now();
   await box.clear();
   addToKey(box, now, Bird('Mésange', 'Paridae', 20.0, 58.0, 98.4, "", now));
