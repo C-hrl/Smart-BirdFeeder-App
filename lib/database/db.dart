@@ -94,15 +94,17 @@ Future<Box<List<Bird>>> setupDatabase() async {
 
   cachedDb = box;
   timedFetch = Timer.periodic(const Duration(seconds: 2), (timer) {
-    getData('http://$raspberryIp').then((birds) {
-      debugPrint('fetch done');
-      if (birds != null) {
-        debugPrint('add birds');
-        for (var bird in birds) {
-          addToKey(cachedDb!, bird.date, bird);
+    if(raspberryIp.isNotEmpty) {
+      getData('http://$raspberryIp').then((birds) {
+        debugPrint('fetch done');
+        if (birds != null) {
+          debugPrint('add birds');
+          for (var bird in birds) {
+            addToKey(cachedDb!, bird.date, bird);
+          }
         }
-      }
-    });
+      });
+    }
   });
 
   return cachedDb!;
