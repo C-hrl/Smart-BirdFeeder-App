@@ -8,6 +8,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive/hive.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:smart_bird_feeder/database/network.dart';
+import 'package:smart_bird_feeder/main.dart';
 
 class Bird {
   String name;
@@ -61,7 +62,7 @@ Future<Box<List<Bird>>> setupDatabase() async {
   }
   var box = await Hive.openBox<List<Bird>>('birdsBox');
   // fill box for testing
-  var now = DateTime.now();
+  /*var now = DateTime.now();
   await box.clear();
   addToKey(box, now, Bird('Mésange', 'Paridae', 20.0, 58.0, 98.4, "", now));
 
@@ -89,16 +90,16 @@ Future<Box<List<Bird>>> setupDatabase() async {
       box, other2, Bird('Merle', "Turdus merula", 21, 48.0, 60.4, "", other2));
 
   addToKey(box, other2,
-      Bird('Rouge-Gorge', 'Erithacus rubecula', 10, 70.0, 50.4, "", other2));
+      Bird('Rouge-Gorge', 'Erithacus rubecula', 10, 70.0, 50.4, "", other2));*/
 
   cachedDb = box;
-  timedFetch = Timer.periodic(const Duration(seconds: 30), (timer) {
-    getData('http://192.168.0.118:5000').then((birds) {
+  timedFetch = Timer.periodic(const Duration(seconds: 2), (timer) {
+    getData('http://$raspberryIp').then((birds) {
       debugPrint('fetch done');
       if (birds != null) {
         debugPrint('add birds');
         for (var bird in birds) {
-          addToKey(box, bird.date, bird);
+          addToKey(cachedDb!, bird.date, bird);
         }
       }
     });

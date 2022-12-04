@@ -161,17 +161,19 @@ class Page extends ConsumerWidget {
   }
 }
 
+var raspberryIp = "";
+
 class Home extends ConsumerWidget {
   const Home({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return Expanded(
-        child: Center(
-            child: FaIcon(
-      FontAwesomeIcons.question,
-      size: MediaQuery.of(context).size.width * 0.8,
-      color: colorGolden,
-    )));
+    return TextField(
+        onChanged: (value) => raspberryIp = value,
+        decoration: const InputDecoration(
+        border: OutlineInputBorder(),
+        hintText: 'Enter your raspberry\'s ip (with port)',
+      ),
+    );
   }
 }
