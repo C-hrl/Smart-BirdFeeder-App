@@ -25,7 +25,7 @@ class Bird {
     var appDirectory = await getApplicationDocumentsDirectory();
     var latinName = json['bird_lt'] as String;
     var unixDate = json['time'] as int;
-    debugPrint(json.toString()); 
+    debugPrint(json.toString());
     final file = File(
         '${appDirectory.path}/${latinName.replaceAll(' ', '_')}_${unixDate}_$id.mp3');
     await file.writeAsBytes(base64.decode(json['data']), flush: true);
@@ -94,15 +94,16 @@ Future<Box<List<Bird>>> setupDatabase() async {
 
   cachedDb = box;
   timedFetch = Timer.periodic(const Duration(seconds: 2), (timer) {
-      getData('http://${raspberryIp.isNotEmpty ? raspberryIp: 'raspberry-piou.local:5000'}').then((birds) {
-        debugPrint('fetch done');
-        if (birds != null) {
-          debugPrint('add birds');
-          for (var bird in birds) {
-            addToKey(cachedDb!, bird.date, bird);
-          }
+    getData('http://${raspberryIp.isNotEmpty ? raspberryIp : 'raspberry-piou.local:5000'}')
+        .then((birds) {
+      debugPrint('fetch done');
+      if (birds != null) {
+        debugPrint('add birds');
+        for (var bird in birds) {
+          addToKey(cachedDb!, bird.date, bird);
         }
-      });
+      }
+    });
   });
 
   return cachedDb!;

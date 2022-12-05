@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:sidebarx/sidebarx.dart';
 import 'package:smart_bird_feeder/calendar.dart';
 import 'package:smart_bird_feeder/database/db.dart';
@@ -169,8 +168,8 @@ class Home extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return TextField(
-        onChanged: (value) => raspberryIp = value,
-        decoration: const InputDecoration(
+      onChanged: (value) => raspberryIp = value,
+      decoration: const InputDecoration(
         border: OutlineInputBorder(),
         hintText: 'Enter your raspberry\'s ip (with port)',
       ),
