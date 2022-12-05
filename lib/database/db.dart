@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive/hive.dart';
 import 'package:path_provider/path_provider.dart';
@@ -76,7 +77,6 @@ Future<Box<List<Bird>>> setupDatabase() async {
   await file2.writeAsBytes(
       (await rootBundle.load('sounds/Rougegorge2.mp3')).buffer.asUint8List());
 
-
   addToKey(
       box,
       now,
@@ -98,7 +98,6 @@ Future<Box<List<Bird>>> setupDatabase() async {
       Bird('Rouge-Gorge', 'Erithacus rubecula', 10, 70.0, 50.4, "", other2));
 
   cachedDb = box;
-
 
 
   timedFetch = Timer.periodic(const Duration(seconds: 2), (timer) {
