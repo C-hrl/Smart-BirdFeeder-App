@@ -167,12 +167,12 @@ class Home extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return TextField(
+    return Expanded(child: TextField(
       onChanged: (value) => raspberryIp = value,
       decoration: const InputDecoration(
         border: OutlineInputBorder(),
         hintText: 'Enter your raspberry\'s ip (with port)',
       ),
-    );
+    ));
   }
 }

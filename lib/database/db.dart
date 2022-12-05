@@ -8,6 +8,7 @@ import 'package:hive/hive.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:smart_bird_feeder/database/network.dart';
 import 'package:smart_bird_feeder/main.dart';
+import 'package:nsd/nsd.dart';
 
 class Bird {
   String name;
@@ -61,8 +62,8 @@ Future<Box<List<Bird>>> setupDatabase() async {
   }
   var box = await Hive.openBox<List<Bird>>('birdsBox');
   // fill box for testing
-  await box.clear();
-  /*var now = DateTime.now();
+  //await box.clear();
+  var now = DateTime.now();
   await box.clear();
   addToKey(box, now, Bird('Mésange', 'Paridae', 20.0, 58.0, 98.4, "", now));
 
@@ -72,13 +73,18 @@ Future<Box<List<Bird>>> setupDatabase() async {
   await file1.writeAsBytes(
       (await rootBundle.load('sounds/Rougegorge.mp3')).buffer.asUint8List());
 
+  final file2 = File('${appDirectory.path}/audio2.mp3');
+  await file2.writeAsBytes(
+      (await rootBundle.load('sounds/Rougegorge2.mp3')).buffer.asUint8List());
+
+
   addToKey(
       box,
       now,
       Bird('Rouge-Gorge', 'Erithacus rubecula', 20, 58.0, 98.4,
           file1.path /* 'sounds/Rougegorge.mp3' */, now));
   addToKey(box, now,
-      Bird('Test Mésange', 'Paridae', 20.0, 58.0, 98.4, file1.path, now));
+      Bird('Test Mésange', 'Paridae', 20.0, 58.0, 98.4, file2.path, now));
   addToKey(box, now, Bird('Mésange', 'Paridae', 20.0, 58.0, 98.4, "", now));
   addToKey(box, now, Bird('Mésange', 'Paridae', 20.0, 58.0, 98.4, "", now));
   var other = now.add(const Duration(days: 3, hours: 9));
@@ -90,9 +96,22 @@ Future<Box<List<Bird>>> setupDatabase() async {
       box, other2, Bird('Merle', "Turdus merula", 21, 48.0, 60.4, "", other2));
 
   addToKey(box, other2,
-      Bird('Rouge-Gorge', 'Erithacus rubecula', 10, 70.0, 50.4, "", other2));*/
+      Bird('Rouge-Gorge', 'Erithacus rubecula', 10, 70.0, 50.4, "", other2));
 
-  cachedDb = box;  
+  cachedDb = box;
+
+
+
+  final discovery = await startDiscovery('_http._tcp', ipLookupType: IpLookupType.any);
+  discovery.addListener(() {
+    for (var element in discovery.services) {
+      if(element.host == 'raspberry-piou.local') {
+        raspberryIp = '${element.addresses![0].address}:5000';
+        debugPrint('ip found : $raspberryIp');
+      }
+    }});
+  await stopDiscovery(discovery);
+  
 
   timedFetch = Timer.periodic(const Duration(seconds: 2), (timer) {
     getData('http://${raspberryIp.isNotEmpty ? raspberryIp : 'raspberry-piou.local:5000'}')

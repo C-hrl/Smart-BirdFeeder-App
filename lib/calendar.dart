@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:audio_waveforms/audio_waveforms.dart';
 import 'package:blur/blur.dart';
 import 'package:flutter/material.dart';
@@ -346,7 +348,13 @@ class _AudioPlayer extends ConsumerState<AudioPlayer>
 
   Future<void> preparePlayer() async {
     String path = ref.watch(selectedBirdSongPathProvider);
-    await birdSongController.stopPlayer();
+
+    if(Platform.isAndroid) {
+      await birdSongController.stopPlayer();
+    }
+    else {
+      birdSongController.setPlayerState(PlayerState.stopped);
+    }
     if (path.isNotEmpty) {
       birdSongController.onPlayerStateChanged.listen((state) {
         ref.watch(currentPlayerState.notifier).state = state;
