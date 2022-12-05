@@ -330,6 +330,9 @@ class _AudioPlayer extends ConsumerState<AudioPlayer>
   void initState() {
     super.initState();
     birdSongController = PlayerController();
+    birdSongController.onPlayerStateChanged.listen((state) {
+        ref.watch(currentPlayerState.notifier).state = state;
+    });
   }
 
   @override
@@ -350,7 +353,7 @@ class _AudioPlayer extends ConsumerState<AudioPlayer>
     String path = ref.watch(selectedBirdSongPathProvider);
 
     if(Platform.isAndroid) {
-      if(birdSongController.playerState != PlayerState.stopped && birdSongController.playerState != PlayerState.initialized) {
+      if(birdSongController.playerState != PlayerState.stopped) {
         await birdSongController.stopPlayer();
       }
     }
@@ -358,13 +361,7 @@ class _AudioPlayer extends ConsumerState<AudioPlayer>
       birdSongController.setPlayerState(PlayerState.stopped);
     }
     if (path.isNotEmpty) {
-      birdSongController.onPlayerStateChanged.listen((state) {
-        ref.watch(currentPlayerState.notifier).state = state;
-      });
       await birdSongController.preparePlayer(path);
-      if(ref.watch(currentPlayerState) != birdSongController.playerState) {
-       ref.watch(currentPlayerState.notifier).state = birdSongController.playerState;
-      }
     }
   }
 
