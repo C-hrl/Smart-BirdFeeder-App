@@ -362,6 +362,9 @@ class _AudioPlayer extends ConsumerState<AudioPlayer>
         ref.watch(currentPlayerState.notifier).state = state;
       });
       await birdSongController.preparePlayer(path);
+      if(ref.watch(currentPlayerState) != birdSongController.playerState) {
+       ref.watch(currentPlayerState.notifier).state = birdSongController.playerState;
+      }
     }
   }
 
