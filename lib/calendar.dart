@@ -349,17 +349,19 @@ class _AudioPlayer extends ConsumerState<AudioPlayer>
   Future<void> preparePlayer() async {
     String path = ref.watch(selectedBirdSongPathProvider);
 
-    
+    if(Platform.isAndroid) {
+      if(birdSongController.playerState != PlayerState.stopped && birdSongController.playerState != PlayerState.initialized) {
+        await birdSongController.stopPlayer();
+      }
+    }
+    else {
+      birdSongController.setPlayerState(PlayerState.stopped);
+    }
     if (path.isNotEmpty) {
       birdSongController.onPlayerStateChanged.listen((state) {
         ref.watch(currentPlayerState.notifier).state = state;
       });
       await birdSongController.preparePlayer(path);
-    } else if(Platform.isAndroid) {
-      await birdSongController.stopPlayer();
-    }
-    else {
-      birdSongController.setPlayerState(PlayerState.stopped);
     }
   }
 
