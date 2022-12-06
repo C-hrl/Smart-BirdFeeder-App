@@ -63,11 +63,8 @@ Future<Box<List<Bird>>> setupDatabase() async {
   }
   var box = await Hive.openBox<List<Bird>>('birdsBox');
   // fill box for testing
-  //await box.clear();
-  var now = DateTime.now();
   await box.clear();
-  addToKey(box, now, Bird('Mésange', 'Paridae', 20.0, 58.0, 98.4, "", now));
-
+  var now = DateTime.now();
   //loads audio test in android files.
   var appDirectory = await getApplicationDocumentsDirectory();
   final file1 = File('${appDirectory.path}/audio1.mp3');
@@ -83,31 +80,21 @@ Future<Box<List<Bird>>> setupDatabase() async {
       now,
       Bird('Rouge-Gorge', 'Erithacus rubecula', 20, 58.0, 98.4,
           file1.path /* 'sounds/Rougegorge.mp3' */, now));
-  addToKey(box, now,
-      Bird('Test Mésange', 'Paridae', 20.0, 58.0, 98.4, file2.path, now));
-  addToKey(box, now, Bird('Mésange', 'Paridae', 20.0, 58.0, 98.4, "", now));
-  addToKey(box, now, Bird('Mésange', 'Paridae', 20.0, 58.0, 98.4, "", now));
-  var other = now.add(const Duration(days: 3, hours: 9));
-  addToKey(box, other,
-      Bird('Moineau', 'Passer domesticus', 20, 58.0, 98.4, "", other));
-
-  var other2 = now.add(const Duration(days: 3, hours: 10));
   addToKey(
-      box, other2, Bird('Merle', "Turdus merula", 21, 48.0, 60.4, "", other2));
-
-  addToKey(box, other2,
-      Bird('Rouge-Gorge', 'Erithacus rubecula', 10, 70.0, 50.4, "", other2));
+      box, now, Bird('Mésange', 'Paridae', 20.0, 58.0, 98.4, file2.path, now));
 
   cachedDb = box;
 
-  final discovery = await startDiscovery('_http._tcp', ipLookupType: IpLookupType.any);
+  final discovery =
+      await startDiscovery('_http._tcp', ipLookupType: IpLookupType.any);
   discovery.addListener(() {
     for (var element in discovery.services) {
-      if(element.host == 'raspberry-piou.local') {
+      if (element.host == 'raspberry-piou.local') {
         raspberryIp = '${element.addresses![0].address}:5000';
         debugPrint('ip found : $raspberryIp');
       }
-    }});
+    }
+  });
   await stopDiscovery(discovery);
 
   timedFetch = Timer.periodic(const Duration(seconds: 2), (timer) {
