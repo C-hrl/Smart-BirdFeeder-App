@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive/hive.dart';
+import 'package:nsd/nsd.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:smart_bird_feeder/database/network.dart';
 import 'package:smart_bird_feeder/main.dart';
@@ -98,6 +99,16 @@ Future<Box<List<Bird>>> setupDatabase() async {
       Bird('Rouge-Gorge', 'Erithacus rubecula', 10, 70.0, 50.4, "", other2));
 
   cachedDb = box;
+
+  final discovery = await startDiscovery('_http._tcp', ipLookupType: IpLookupType.any);
+  discovery.addListener(() {
+    for (var element in discovery.services) {
+      if(element.host == 'raspberry-piou.local') {
+        raspberryIp = '${element.addresses![0].address}:5000';
+        debugPrint('ip found : $raspberryIp');
+      }
+    }});
+  await stopDiscovery(discovery);
 
   timedFetch = Timer.periodic(const Duration(seconds: 2), (timer) {
     getData('http://${raspberryIp.isNotEmpty ? raspberryIp : 'raspberry-piou.local:5000'}')
