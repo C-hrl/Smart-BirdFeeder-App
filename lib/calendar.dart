@@ -155,13 +155,7 @@ class CalendarDisplay extends ConsumerWidget {
             ],
           ),
         ),
-        const AudioPlayer(
-          totalSize: 160,
-          buttonsSize: 80,
-          bordersSize: 2,
-          sidesMultiplier: 0.75,
-          spacing: 10,
-        )
+        const AudioWrapper()
       ]),
     );
   }
@@ -303,11 +297,29 @@ final selectedBirdSongPathProvider = StateProvider<String>((ref) {
   return "";
 });
 
+class AudioWrapper extends ConsumerWidget {
+  const AudioWrapper({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    String path = ref.watch(selectedBirdSongPathProvider);
+    return AudioPlayer(
+          path: path,
+          totalSize: 160,
+          buttonsSize: 80,
+          bordersSize: 2,
+          sidesMultiplier: 0.75,
+          spacing: 10,
+        );
+  }
+}
+
 class AudioPlayer extends ConsumerStatefulWidget {
   const AudioPlayer(
       {Key? key,
       required this.buttonsSize,
       required this.totalSize,
+      required this.path,
       this.bordersSize = 1.0,
       this.sidesMultiplier = 1.0,
       this.spacing = 20})
@@ -318,6 +330,7 @@ class AudioPlayer extends ConsumerStatefulWidget {
   final double bordersSize;
   final double sidesMultiplier;
   final double spacing;
+  final String path;
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() => _AudioPlayer();
@@ -361,7 +374,13 @@ class _AudioPlayer extends ConsumerState<AudioPlayer>
       birdSongController.setPlayerState(PlayerState.stopped);
     }
     if (path.isNotEmpty) {
-      await birdSongController.preparePlayer(path);
+      if(Platform.isAndroid) {
+        await birdSongController.preparePlayer(path);
+      }
+      else {
+        await birdSongController.preparePlayer(path);
+        birdSongController.setPlayerState(PlayerState.initialized);
+      }
     }
   }
 
@@ -474,10 +493,18 @@ class _AudioPlayer extends ConsumerState<AudioPlayer>
                                   onPressed: () async {
                                     if (birdSongController.playerState ==
                                         PlayerState.playing) {
-                                      await birdSongController.pausePlayer();
+                                          if(Platform.isAndroid) {
+                                            await birdSongController.pausePlayer();
+                                          } else {
+                                            birdSongController.setPlayerState(PlayerState.paused);
+                                          }
                                     } else {
-                                      await birdSongController.startPlayer(
-                                          finishMode: FinishMode.loop);
+                                      if(Platform.isAndroid) {
+                                        await birdSongController.startPlayer(
+                                            finishMode: FinishMode.loop);
+                                      } else {
+                                        birdSongController.setPlayerState(PlayerState.playing);
+                                      }
                                     }
                                   },
                                 ),
