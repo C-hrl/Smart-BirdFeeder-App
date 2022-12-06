@@ -534,11 +534,12 @@ class ConsumerPlayerButton extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    var currentState = ref.watch(currentPlayerState);
     return PlayerButton(
         buttonsSize: buttonsSize,
         bordersSize: bordersSize,
         birdSongController: birdSongController,
-        icon: buildIcon(ref.watch(currentPlayerState)),
+        icon: buildIcon(currentState),
         onPressed: onPressed);
   }
 }
